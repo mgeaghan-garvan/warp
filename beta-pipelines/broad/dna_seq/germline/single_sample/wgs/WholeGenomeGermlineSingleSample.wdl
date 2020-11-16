@@ -38,13 +38,16 @@ import "../../../../../../structs/dna_seq/DNASeqStructs.wdl"
 # WORKFLOW DEFINITION
 workflow WholeGenomeGermlineSingleSample {
 
-  String pipeline_version = "2.3.1"
+  String pipeline_version = "3.0.0"
 
   input {
     SampleAndUnmappedBams sample_and_unmapped_bams
     DNASeqSingleSampleReferences references
+    DragmapReference? dragmap_reference
     VariantCallingScatterSettings scatter_settings
     PapiSettings papi_settings
+
+    File? dragmap_binary
 
     File? fingerprint_genotypes_file
     File? fingerprint_genotypes_index
@@ -53,6 +56,9 @@ workflow WholeGenomeGermlineSingleSample {
 
     Boolean provide_bam_output = false
     Boolean use_gatk3_haplotype_caller = true
+    Boolean run_dragen_mode = false
+    Boolean perform_bqsr = true
+    Boolean use_bwa_mem = true
   }
 
   # Not overridable:
@@ -67,6 +73,8 @@ workflow WholeGenomeGermlineSingleSample {
     input:
       sample_and_unmapped_bams    = sample_and_unmapped_bams,
       references                  = references,
+      dragmap_reference           = dragmap_reference,
+      dragmap_binary              = dragmap_binary,
       papi_settings               = papi_settings,
 
       contamination_sites_ud = references.contamination_sites_ud,
@@ -76,7 +84,9 @@ workflow WholeGenomeGermlineSingleSample {
       cross_check_fingerprints_by = cross_check_fingerprints_by,
       haplotype_database_file     = references.haplotype_database_file,
       lod_threshold               = lod_threshold,
-      recalibrated_bam_basename   = recalibrated_bam_basename
+      recalibrated_bam_basename   = recalibrated_bam_basename,
+      perform_bqsr                = perform_bqsr,
+      use_bwa_mem                 = use_bwa_mem
   }
 
   call AggregatedQC.AggregatedBamQC {
@@ -133,6 +143,7 @@ workflow WholeGenomeGermlineSingleSample {
 
   call ToGvcf.VariantCalling as BamToGvcf {
     input:
+      run_dragen_mode = run_dragen_mode,
       calling_interval_list = references.calling_interval_list,
       evaluation_interval_list = references.evaluation_interval_list,
       haplotype_scatter_count = scatter_settings.haplotype_scatter_count,

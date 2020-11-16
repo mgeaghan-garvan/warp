@@ -381,14 +381,14 @@ task ValidateSamFile {
     Array[String]? ignore
     Boolean? is_outlier_data
     Int preemptible_tries
-    Int memory_multiplier = 1
+    Int memory_multiplier = 2
     Int additional_disk = 20
   }
 
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB") + size(ref_dict, "GiB")
   Int disk_size = ceil(size(input_bam, "GiB") + ref_size) + additional_disk
 
-  Int memory_size = ceil(7 * memory_multiplier)
+  Int memory_size = ceil(10 * memory_multiplier)
   Int java_memory_size = (memory_size - 1) * 1000
 
   command {
@@ -406,6 +406,7 @@ task ValidateSamFile {
   runtime {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     preemptible: preemptible_tries
+    maxRetries: 3
     memory: "~{memory_size} GiB"
     disks: "local-disk " + disk_size + " HDD"
   }
@@ -491,6 +492,7 @@ task CollectRawWgsMetrics {
     preemptible: preemptible_tries
     memory: "~{memory_size} GiB"
     disks: "local-disk " + disk_size + " HDD"
+    maxReplies: 3
   }
   output {
     File metrics = "~{metrics_filename}"

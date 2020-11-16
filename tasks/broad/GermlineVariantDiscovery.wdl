@@ -92,8 +92,13 @@ task HaplotypeCaller_GATK4_VCF {
     Boolean make_bamout
     Int preemptible_tries
     Int hc_scatter
-    String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.1.8.0"
+    Boolean run_dragen_mode = false
+    File? dragstr_model
+    String? gatk_docker
   }
+
+  String default_gatk_docker = if run_dragen_mode then "us.gcr.io/broad-dsde-methods/broad-gatk-snapshots/dragen_final_test_v2" else "us.gcr.io/broad-gatk/gatk:4.1.8.0"
+  String gatk_docker_to_use = select_first([gatk_docker, default_gatk_docker])
 
   String output_suffix = if make_gvcf then ".g.vcf.gz" else ".vcf.gz"
   String output_file_name = vcf_basename + output_suffix
@@ -119,6 +124,8 @@ task HaplotypeCaller_GATK4_VCF {
       -O ~{output_file_name} \
       -contamination ~{default=0 contamination} \
       -G StandardAnnotation -G StandardHCAnnotation ~{true="-G AS_StandardAnnotation" false="" make_gvcf} \
+      ~{true="--dragen-mode" false="" run_dragen_mode} \
+      ~{if defined(dragstr_model) then "--dragstr-params-path " + dragstr_model else ""} \
       -GQB 10 -GQB 20 -GQB 30 -GQB 40 -GQB 50 -GQB 60 -GQB 70 -GQB 80 -GQB 90 \
       ~{true="-ERC GVCF" false="" make_gvcf} \
       ~{bamout_arg}
@@ -128,12 +135,13 @@ task HaplotypeCaller_GATK4_VCF {
   >>>
 
   runtime {
-    docker: gatk_docker
+    docker: gatk_docker_to_use
     preemptible: preemptible_tries
-    memory: "6.5 GiB"
+    memory: "10 GiB"
     cpu: "2"
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size + " HDD"
+    maxRetries: 3
   }
 
   output {
