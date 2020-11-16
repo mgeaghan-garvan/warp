@@ -1,5 +1,5 @@
 {
-  "read_from_cache": true,
+  "read_from_cache": false,
   "write_to_cache": true,
   "google_legacy_machine_selection": true,
   "default_runtime_attributes": {
