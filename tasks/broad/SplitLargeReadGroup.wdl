@@ -86,6 +86,8 @@ workflow SplitLargeReadGroup {
 
     File output_bam = select_first([SamToFastqAndBwaMemAndMba.output_bam, SamToFastqAndDragmapAndMba.output_bam])
 
+    File output_bam = select_first([SamToFastqAndBwaMemAndMba.output_bam, SamToFastqAndDragmapAndMba.output_bam])
+
     Float current_mapped_size = size(output_bam, "GiB")
   }
 
