@@ -144,6 +144,7 @@ task HaplotypeCaller_GATK4_VCF {
     cpu: "2"
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size + " HDD"
+    maxRetries: 3
   }
 
   output {
