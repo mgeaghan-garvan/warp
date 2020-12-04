@@ -36,13 +36,9 @@ import "../../../../../../tasks/broad/VariantCalling.wdl" as ToGvcf
 import "../../../../../../structs/dna_seq/DNASeqStructs.wdl"
 
 # WORKFLOW DEFINITION
-workflow WholeGenomeGermlineSingleSample_Test {
+workflow WholeGenomeGermlineSingleSample {
 
-<<<<<<< HEAD
   String pipeline_version = "2.3.1"
-=======
-  String pipeline_version = "2.1.1"
->>>>>>> Rename workflow within file
 
   input {
     SampleAndUnmappedBams sample_and_unmapped_bams
