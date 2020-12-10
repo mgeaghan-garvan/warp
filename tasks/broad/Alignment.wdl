@@ -15,7 +15,7 @@ version 1.0
 ## page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
 ## licensing information pertaining to the included programs.
 
-import "../structs/dna_seq/DNASeqStructs.wdl"
+import "../../structs/dna_seq/DNASeqStructs.wdl"
 
 # Read unmapped BAM, convert on-the-fly to FASTQ and stream to BWA MEM for alignment, then stream to MergeBamAlignment
 task SamToFastqAndBwaMemAndMba {
@@ -69,6 +69,7 @@ task SamToFastqAndBwaMemAndMba {
         INTERLEAVE=true \
         NON_PF=true | \
       /usr/gitc/~{bwa_commandline} /dev/stdin - 2> >(tee ~{output_bam_basename}.bwa.stderr.log >&2) | \
+      /usr/gitc/k8 /usr/gitc/bwa-postalt.js ~{reference_fasta.ref_alt} /dev/stdin | \
       java -Dsamjdk.compression_level=~{compression_level} -Xms1000m -Xmx1000m -jar /usr/gitc/picard.jar \
         MergeBamAlignment \
         VALIDATION_STRINGENCY=SILENT \
@@ -109,7 +110,7 @@ task SamToFastqAndBwaMemAndMba {
     fi
   >>>
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.4.7-1603303710"
+    docker: "michaelgatzen/altaware_bwa:latest" # TODO: update docker to use the new Picard options
     preemptible: preemptible_tries
     memory: "14 GiB"
     cpu: "16"
