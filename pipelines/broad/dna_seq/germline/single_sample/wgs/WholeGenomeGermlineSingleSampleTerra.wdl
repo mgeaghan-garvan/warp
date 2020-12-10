@@ -116,6 +116,11 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     "evaluation_interval_list": reference_evaluation_interval_list,
     "haplotype_database_file": reference_haplotype_database_file
   }
+
+  PapiSettings papi_settings = {
+    "preemptible_tries": papi_settings_preemptible_tries,
+    "agg_preemptible_tries": papi_settings_agg_preemptible_tries
+  }
   
   call WholeGenomeGermlineSingleSample.WholeGenomeGermlineSingleSample as WholeGenomeGermlineSingleSampleTask {
     input:
