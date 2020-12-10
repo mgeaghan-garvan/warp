@@ -90,7 +90,7 @@ workflow WholeGenomeGermlineSingleSampleTerra {
 
   VariantCallingScatterSettings scatter_settings = {
     "haplotype_scatter_count": scatter_settings_haplotype_scatter_count,
-    "break_bands_at_multiples_of": scatter_settings_break_bands_at_multiples_of}
+    "break_bands_at_multiples_of": scatter_settings_break_bands_at_multiples_of
   }
 
   DNASeqSingleSampleReferences references = {
