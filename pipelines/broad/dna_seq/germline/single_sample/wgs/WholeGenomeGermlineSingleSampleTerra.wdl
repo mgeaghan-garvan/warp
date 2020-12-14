@@ -80,7 +80,7 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     Boolean perform_bqsr = true
   }
 
-  SampleAndUnmappedBams sample_and_unmapped_bams = {
+  SampleAndUnmappedBams sample_and_unmapped_bams = object {
     "sample_name": sample_and_unmapped_bams_sample_name,
     "base_file_name": sample_and_unmapped_bams_base_file_name,
     "flowcell_unmapped_bams": sample_and_unmapped_bams_flowcell_unmapped_bams,
@@ -88,17 +88,17 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     "unmapped_bam_suffix": sample_and_unmapped_bams_unmapped_bam_suffix
   }
 
-  VariantCallingScatterSettings scatter_settings = {
+  VariantCallingScatterSettings scatter_settings = object {
     "haplotype_scatter_count": scatter_settings_haplotype_scatter_count,
     "break_bands_at_multiples_of": scatter_settings_break_bands_at_multiples_of
   }
 
-  DNASeqSingleSampleReferences references = {
+  DNASeqSingleSampleReferences references = object {
     "contamination_sites_ud": reference_contamination_sites_ud,
     "contamination_sites_bed": reference_contamination_sites_bed,
     "contamination_sites_mu": reference_contamination_sites_mu,
     "calling_interval_list": reference_calling_interval_list,
-    "reference_fasta": {
+    "reference_fasta": object {
       "ref_dict": reference_reference_fasta_ref_dict,
       "ref_fasta": reference_reference_fasta_ref_fasta,
       "ref_fasta_index": reference_reference_fasta_ref_fasta_index,
@@ -117,7 +117,7 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     "haplotype_database_file": reference_haplotype_database_file
   }
 
-  PapiSettings papi_settings = {
+  PapiSettings papi_settings = object {
     "preemptible_tries": papi_settings_preemptible_tries,
     "agg_preemptible_tries": papi_settings_agg_preemptible_tries
   }
