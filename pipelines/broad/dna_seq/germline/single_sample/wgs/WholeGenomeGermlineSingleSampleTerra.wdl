@@ -81,45 +81,45 @@ workflow WholeGenomeGermlineSingleSampleTerra {
   }
 
   SampleAndUnmappedBams sample_and_unmapped_bams = object {
-    "sample_name": sample_and_unmapped_bams_sample_name,
-    "base_file_name": sample_and_unmapped_bams_base_file_name,
-    "flowcell_unmapped_bams": sample_and_unmapped_bams_flowcell_unmapped_bams,
-    "final_gvcf_base_name": sample_and_unmapped_bams_final_gvcf_base_name,
-    "unmapped_bam_suffix": sample_and_unmapped_bams_unmapped_bam_suffix
+    sample_name: sample_and_unmapped_bams_sample_name,
+    base_file_name: sample_and_unmapped_bams_base_file_name,
+    flowcell_unmapped_bams: sample_and_unmapped_bams_flowcell_unmapped_bams,
+    final_gvcf_base_name: sample_and_unmapped_bams_final_gvcf_base_name,
+    unmapped_bam_suffix: sample_and_unmapped_bams_unmapped_bam_suffix
   }
 
   VariantCallingScatterSettings scatter_settings = object {
-    "haplotype_scatter_count": scatter_settings_haplotype_scatter_count,
-    "break_bands_at_multiples_of": scatter_settings_break_bands_at_multiples_of
+    haplotype_scatter_count: scatter_settings_haplotype_scatter_count,
+    break_bands_at_multiples_of: scatter_settings_break_bands_at_multiples_of
   }
 
   DNASeqSingleSampleReferences references = object {
-    "contamination_sites_ud": reference_contamination_sites_ud,
-    "contamination_sites_bed": reference_contamination_sites_bed,
-    "contamination_sites_mu": reference_contamination_sites_mu,
-    "calling_interval_list": reference_calling_interval_list,
-    "reference_fasta": object {
-      "ref_dict": reference_reference_fasta_ref_dict,
-      "ref_fasta": reference_reference_fasta_ref_fasta,
-      "ref_fasta_index": reference_reference_fasta_ref_fasta_index,
-      "ref_alt": reference_reference_fasta_ref_alt,
-      "ref_sa": reference_reference_fasta_ref_sa,
-      "ref_amb": reference_reference_fasta_ref_amb,
-      "ref_bwt": reference_reference_fasta_ref_bwt,
-      "ref_ann": reference_reference_fasta_ref_ann,
-      "ref_pac": reference_reference_fasta_ref_pac
+    contamination_sites_ud: reference_contamination_sites_ud,
+    contamination_sites_bed: reference_contamination_sites_bed,
+    contamination_sites_mu: reference_contamination_sites_mu,
+    calling_interval_list: reference_calling_interval_list,
+    reference_fasta: object {
+      ref_dict: reference_reference_fasta_ref_dict,
+      ref_fasta: reference_reference_fasta_ref_fasta,
+      ref_fasta_index: reference_reference_fasta_ref_fasta_index,
+      ref_alt: reference_reference_fasta_ref_alt,
+      ref_sa: reference_reference_fasta_ref_sa,
+      ref_amb: reference_reference_fasta_ref_amb,
+      ref_bwt: reference_reference_fasta_ref_bwt,
+      ref_ann: reference_reference_fasta_ref_ann,
+      ref_pac: reference_reference_fasta_ref_pac
     },
-    "known_indels_sites_vcfs": reference_known_indels_sites_vcfs,
-    "known_indels_sites_indices": reference_known_indels_sites_indices,
-    "dbsnp_vcf": reference_dbsnp_vcf,
-    "dbsnp_vcf_index": reference_dbsnp_vcf_index,
-    "evaluation_interval_list": reference_evaluation_interval_list,
-    "haplotype_database_file": reference_haplotype_database_file
+    known_indels_sites_vcfs: reference_known_indels_sites_vcfs,
+    known_indels_sites_indices: reference_known_indels_sites_indices,
+    dbsnp_vcf: reference_dbsnp_vcf,
+    dbsnp_vcf_index: reference_dbsnp_vcf_index,
+    evaluation_interval_list: reference_evaluation_interval_list,
+    haplotype_database_file: reference_haplotype_database_file
   }
 
   PapiSettings papi_settings = object {
-    "preemptible_tries": papi_settings_preemptible_tries,
-    "agg_preemptible_tries": papi_settings_agg_preemptible_tries
+    preemptible_tries: papi_settings_preemptible_tries,
+    agg_preemptible_tries: papi_settings_agg_preemptible_tries
   }
   
   call WholeGenomeGermlineSingleSample.WholeGenomeGermlineSingleSample as WholeGenomeGermlineSingleSampleTask {
