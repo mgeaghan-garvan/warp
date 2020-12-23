@@ -49,7 +49,7 @@ task SamToFastqAndDragmapAndMba {
     set -o pipefail
     set -e
 
-    DRAGMAP_VERSION=$(./dragen-os --version)
+    DRAGMAP_VERSION=$(~{dragmap_binary} --version)
 
     if [-z ${DRAGMAP_VERSION}]; then
         exit 1;
