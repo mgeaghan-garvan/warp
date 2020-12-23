@@ -18,7 +18,7 @@ version 1.0
 import "../../structs/dna_seq/DNASeqStructs.wdl"
 
 # Read unmapped BAM, convert on-the-fly to FASTQ and stream to BWA MEM for alignment, then stream to MergeBamAlignment
-task SamToFastqAndDragmapAlignmentAndMba {
+task SamToFastqAndDragmapAndMba {
   input {
     File input_bam
     String output_bam_basename
