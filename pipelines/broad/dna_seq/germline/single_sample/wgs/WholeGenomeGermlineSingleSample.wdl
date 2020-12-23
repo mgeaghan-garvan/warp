@@ -47,6 +47,8 @@ workflow WholeGenomeGermlineSingleSample {
     VariantCallingScatterSettings scatter_settings
     PapiSettings papi_settings
 
+    File? dragmap_binary
+
     File? fingerprint_genotypes_file
     File? fingerprint_genotypes_index
 
@@ -72,6 +74,7 @@ workflow WholeGenomeGermlineSingleSample {
       sample_and_unmapped_bams    = sample_and_unmapped_bams,
       references                  = references,
       dragmap_reference           = dragmap_reference,
+      dragmap_binary              = dragmap_binary,
       papi_settings               = papi_settings,
 
       contamination_sites_ud = references.contamination_sites_ud,

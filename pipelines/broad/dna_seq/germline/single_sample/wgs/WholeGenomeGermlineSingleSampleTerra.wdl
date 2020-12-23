@@ -67,6 +67,8 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     File? dragmap_reference_reference_index_bin
     File? dragmap_reference_hash_table_cmp
 
+    File? dragmap_binary
+
     Int scatter_settings_haplotype_scatter_count
     Int scatter_settings_break_bands_at_multiples_of
 
@@ -140,6 +142,7 @@ workflow WholeGenomeGermlineSingleSampleTerra {
       sample_and_unmapped_bams = sample_and_unmapped_bams,
       references = references,
       dragmap_reference = dragmap_reference,
+      dragmap_binary = dragmap_binary,
       scatter_settings = scatter_settings,
       papi_settings = papi_settings,
 

@@ -26,7 +26,7 @@ task SamToFastqAndDragmapAndMba {
     ReferenceFasta reference_fasta
     DragmapReference dragmap_reference
 
-    File picard_jar
+    File picard_jar = "gs://broad-dsde-methods-mgatzen/dragen_evaluation/alignment/picard-2.23.7-SNAPSHOT-all.jar"
     File dragmap_binary
 
     Int compression_level
