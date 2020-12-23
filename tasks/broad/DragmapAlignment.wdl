@@ -49,6 +49,8 @@ task SamToFastqAndDragmapAndMba {
     set -o pipefail
     set -e
 
+    chmod +x ~{dragmap_binary}
+
     DRAGMAP_VERSION=$(~{dragmap_binary} --version)
 
     if [-z ${DRAGMAP_VERSION}]; then
