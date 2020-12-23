@@ -17,6 +17,7 @@ version 1.0
 ## licensing information pertaining to the included programs.
 
 import "../../tasks/broad/Alignment.wdl" as Alignment
+import "../../tasks/broad/DragmapAlignment.wdl" as DragmapAlignment
 import "../../tasks/broad/SplitLargeReadGroup.wdl" as SplitRG
 import "../../tasks/broad/Qc.wdl" as QC
 import "../../tasks/broad/BamProcessing.wdl" as Processing
