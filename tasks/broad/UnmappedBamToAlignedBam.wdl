@@ -37,6 +37,8 @@ workflow UnmappedBamToAlignedBam {
     File contamination_sites_bed
     File contamination_sites_mu
 
+    File? dragmap_binary
+
     String cross_check_fingerprints_by
     File haplotype_database_file
     Float lod_threshold
@@ -106,6 +108,7 @@ workflow UnmappedBamToAlignedBam {
         call DragmapAlignment.SamToFastqAndDragmapAndMba as SamToFastqAndDragmapAndMba {
           input:
             input_bam = unmapped_bam,
+            dragmap_binary = select_first([dragmap_binary]),
             output_bam_basename = unmapped_bam_basename + ".aligned.unsorted",
             reference_fasta = references.reference_fasta,
             dragmap_reference = select_first([dragmap_reference]),

@@ -35,6 +35,8 @@ workflow SplitLargeReadGroup {
     ReferenceFasta reference_fasta
     DragmapReference? dragmap_reference
 
+    File? dragmap_binary
+
     Int compression_level
     Int preemptible_tries
     Int reads_per_file = 48000000
@@ -72,6 +74,7 @@ workflow SplitLargeReadGroup {
       call DragmapAlignment.SamToFastqAndDragmapAndMba as SamToFastqAndDragmapAndMba {
         input:
           input_bam = unmapped_bam,
+          dragmap_binary = select_first([dragmap_binary]),
           output_bam_basename = current_name,
           reference_fasta = reference_fasta,
           dragmap_reference = select_first([dragmap_reference]),
