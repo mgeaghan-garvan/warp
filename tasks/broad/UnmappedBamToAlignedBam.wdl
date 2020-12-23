@@ -29,6 +29,7 @@ workflow UnmappedBamToAlignedBam {
   input {
     SampleAndUnmappedBams sample_and_unmapped_bams
     DNASeqSingleSampleReferences references
+    DragmapReference? dragmap_reference
     PapiSettings papi_settings
 
     File contamination_sites_ud
@@ -43,6 +44,7 @@ workflow UnmappedBamToAlignedBam {
     Boolean bin_base_qualities = true
     Boolean somatic = false
     Boolean perform_bqsr = true
+    Boolean use_bwa_mem = true
   }
 
   Float cutoff_for_large_rg_in_gb = 20.0
@@ -85,19 +87,34 @@ workflow UnmappedBamToAlignedBam {
 
     if (unmapped_bam_size <= cutoff_for_large_rg_in_gb) {
       # Map reads to reference
-      call Alignment.SamToFastqAndBwaMemAndMba as SamToFastqAndBwaMemAndMba {
-        input:
-          input_bam = unmapped_bam,
-          bwa_commandline = bwa_commandline,
-          output_bam_basename = unmapped_bam_basename + ".aligned.unsorted",
-          reference_fasta = references.reference_fasta,
-          compression_level = compression_level,
-          preemptible_tries = papi_settings.preemptible_tries,
-          hard_clip_reads = hard_clip_reads
+      if (use_bwa_mem) {
+        call Alignment.SamToFastqAndBwaMemAndMba as SamToFastqAndBwaMemAndMba {
+          input:
+            input_bam = unmapped_bam,
+            bwa_commandline = bwa_commandline,
+            output_bam_basename = unmapped_bam_basename + ".aligned.unsorted",
+            reference_fasta = references.reference_fasta,
+            compression_level = compression_level,
+            preemptible_tries = papi_settings.preemptible_tries,
+            hard_clip_reads = hard_clip_reads
+        }
+      }
+      if (!use_bwa_mem) {
+        # select_first will fail if no dragmap_reference is provided. TODO Maybe call an error task to give a more descriptive error message?
+        call DragmapAlignment.SamToFastqAndDragmapAndMba as SamToFastqAndDragmapAndMba {
+          input:
+            input_bam = unmapped_bam,
+            output_bam_basename = unmapped_bam_basename + ".aligned.unsorted",
+            reference_fasta = references.reference_fasta,
+            dragmap_reference = select_first([dragmap_reference]),
+            compression_level = compression_level,
+            preemptible_tries = papi_settings.preemptible_tries,
+            hard_clip_reads = hard_clip_reads
+        }
       }
     }
 
-    File output_aligned_bam = select_first([SamToFastqAndBwaMemAndMba.output_bam, SplitRG.aligned_bam])
+    File output_aligned_bam = select_first([SamToFastqAndBwaMemAndMba.output_bam, SamToFastqAndDragmapAndMba.output_bam, SplitRG.aligned_bam])
 
     Float mapped_bam_size = size(output_aligned_bam, "GiB")
 
