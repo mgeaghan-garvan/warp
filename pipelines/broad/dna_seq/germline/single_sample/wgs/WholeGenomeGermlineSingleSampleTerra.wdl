@@ -63,6 +63,10 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     File reference_evaluation_interval_list
     File reference_haplotype_database_file
 
+    File? dragmap_reference_reference_bin
+    File? dragmap_reference_reference_index_bin
+    File? dragmap_reference_hash_table_cmp
+
     Int scatter_settings_haplotype_scatter_count
     Int scatter_settings_break_bands_at_multiples_of
 
@@ -78,6 +82,7 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     Boolean use_gatk3_haplotype_caller = false
     Boolean run_dragen_mode = true
     Boolean perform_bqsr = true
+    Boolean use_bwa_mem = true
   }
 
   SampleAndUnmappedBams sample_and_unmapped_bams = object {
@@ -117,6 +122,14 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     haplotype_database_file: reference_haplotype_database_file
   }
 
+  if (defined(dragmap_reference_reference_bin) && defined(dragmap_reference_reference_index_bin) && defined(dragmap_reference_hash_table_cmp)) {
+    DragmapReference dragmap_reference = object {
+      reference_bin: dragmap_reference_reference_bin,
+      reference_index_bin: dragmap_reference_reference_index_bin,
+      hash_table_cmp: dragmap_reference_hash_table_cmp
+    }
+  }
+
   PapiSettings papi_settings = object {
     preemptible_tries: papi_settings_preemptible_tries,
     agg_preemptible_tries: papi_settings_agg_preemptible_tries
@@ -126,6 +139,7 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     input:
       sample_and_unmapped_bams = sample_and_unmapped_bams,
       references = references,
+      dragmap_reference = dragmap_reference,
       scatter_settings = scatter_settings,
       papi_settings = papi_settings,
 
@@ -137,7 +151,8 @@ workflow WholeGenomeGermlineSingleSampleTerra {
       provide_bam_output = provide_bam_output,
       use_gatk3_haplotype_caller = use_gatk3_haplotype_caller,
       run_dragen_mode = run_dragen_mode,
-      perform_bqsr = perform_bqsr
+      perform_bqsr = perform_bqsr,
+      use_bwa_mem = use_bwa_mem
   }
 
   # Outputs that will be retained when execution is complete

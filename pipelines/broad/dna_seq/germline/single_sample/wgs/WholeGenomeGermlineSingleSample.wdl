@@ -43,6 +43,7 @@ workflow WholeGenomeGermlineSingleSample {
   input {
     SampleAndUnmappedBams sample_and_unmapped_bams
     DNASeqSingleSampleReferences references
+    DragmapReference? dragmap_reference
     VariantCallingScatterSettings scatter_settings
     PapiSettings papi_settings
 
@@ -55,6 +56,7 @@ workflow WholeGenomeGermlineSingleSample {
     Boolean use_gatk3_haplotype_caller = false
     Boolean run_dragen_mode = true
     Boolean perform_bqsr = true
+    Boolean use_bwa_mem = true
   }
 
   # Not overridable:
@@ -69,6 +71,7 @@ workflow WholeGenomeGermlineSingleSample {
     input:
       sample_and_unmapped_bams    = sample_and_unmapped_bams,
       references                  = references,
+      dragmap_reference           = dragmap_reference,
       papi_settings               = papi_settings,
 
       contamination_sites_ud = references.contamination_sites_ud,
@@ -79,7 +82,8 @@ workflow WholeGenomeGermlineSingleSample {
       haplotype_database_file     = references.haplotype_database_file,
       lod_threshold               = lod_threshold,
       recalibrated_bam_basename   = recalibrated_bam_basename,
-      perform_bqsr                = perform_bqsr
+      perform_bqsr                = perform_bqsr,
+      use_bwa_mem                 = use_bwa_mem
   }
 
   call AggregatedQC.AggregatedBamQC {
