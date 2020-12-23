@@ -20,6 +20,12 @@ struct ReferenceFasta {
   File ref_pac
 }
 
+struct DragmapReference {
+  File reference_bin
+  File reference_index_bin
+  File hash_table_cmp
+}
+
 struct DNASeqSingleSampleReferences {
   File contamination_sites_ud
   File contamination_sites_bed
