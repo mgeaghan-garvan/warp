@@ -46,8 +46,8 @@ task SamToFastqAndDragmapAndMba {
   command <<<
 
 
-    set -o pipefail
-    set -e
+    set -euxo pipefail
+
 
     chmod +x ~{dragmap_binary}
 
