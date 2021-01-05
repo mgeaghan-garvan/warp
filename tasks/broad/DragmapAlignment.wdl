@@ -53,7 +53,7 @@ task SamToFastqAndDragmapAndMba {
 
     DRAGMAP_VERSION=$(~{dragmap_binary} --version)
 
-    if [-z ${DRAGMAP_VERSION}]; then
+    if [ -z ${DRAGMAP_VERSION} ]; then
         exit 1;
     fi
 
