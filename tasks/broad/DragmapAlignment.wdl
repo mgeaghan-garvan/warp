@@ -51,8 +51,6 @@ task SamToFastqAndDragmapAndMba {
 
     chmod +x ~{dragmap_binary}
 
-    chmod +x ~{dragmap_binary}
-
     DRAGMAP_VERSION=$(~{dragmap_binary} --version)
 
     if [ -z ${DRAGMAP_VERSION} ]; then
