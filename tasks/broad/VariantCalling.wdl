@@ -9,7 +9,7 @@ import "../../tasks/broad/Dragen.wdl" as Dragen
 workflow VariantCalling {
 
   input {
-    Boolean run_dragen_mode = true
+    Boolean run_dragen_mode = false
     File calling_interval_list
     File evaluation_interval_list
     Int haplotype_scatter_count
@@ -32,7 +32,7 @@ workflow VariantCalling {
 
   parameter_meta {
     make_bamout: "For CNNScoreVariants to run with a 2D model, a bamout must be created by HaplotypeCaller. The bamout is a bam containing information on how HaplotypeCaller remapped reads while it was calling variants. See https://gatkforums.broadinstitute.org/gatk/discussion/5484/howto-generate-a-bamout-file-showing-how-haplotypecaller-has-remapped-sequence-reads for more details."
-    run_dragen_mode: "Run variant calling using the DRAGEN-GATK pipeline, true by default."
+    run_dragen_mode: "Run variant calling using the DRAGEN-GATK pipeline, false by default."
   }
 
   if (run_dragen_mode) {
@@ -87,8 +87,6 @@ workflow VariantCalling {
     }
 
     if (!use_gatk3_haplotype_caller) {
-
-
       # Generate GVCF by interval
       call Calling.HaplotypeCaller_GATK4_VCF as HaplotypeCallerGATK4 {
         input:

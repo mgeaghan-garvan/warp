@@ -55,8 +55,8 @@ workflow WholeGenomeGermlineSingleSample {
     File wgs_coverage_interval_list
 
     Boolean provide_bam_output = false
-    Boolean use_gatk3_haplotype_caller = false
-    Boolean run_dragen_mode = true
+    Boolean use_gatk3_haplotype_caller = true
+    Boolean run_dragen_mode = false
     Boolean perform_bqsr = true
     Boolean use_bwa_mem = true
   }
