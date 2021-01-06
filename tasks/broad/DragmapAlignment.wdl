@@ -93,9 +93,6 @@ task SamToFastqAndDragmapAndMba {
       ALIGNER_PROPER_PAIR_FLAGS=true \
       UNMAP_CONTAMINANT_READS=true \
       ADD_PG_TAG_TO_READS=false
-
-    grep -m1 "read .* ALT contigs" ~{output_bam_basename}.dragmap.stderr.log | \
-    grep -v "read 0 ALT contigs"
   >>>
   runtime {
     docker: "michaelgatzen/dragen_os"
