@@ -28,7 +28,7 @@ version 1.0
 ## page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
 ## licensing information pertaining to the included programs.
 
-import "WholeGenomeGermlineSingleSample.wdl" as WholeGenomeGermlineSingleSample
+import "../../../../../../beta-pipelines/broad/dna_seq/germline/single_sample/wgs/WholeGenomeGermlineSingleSample.wdl" as WholeGenomeGermlineSingleSample
 import "../../../../../../structs/dna_seq/DNASeqStructs.wdl"
 
 # WORKFLOW DEFINITION
@@ -141,8 +141,8 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     input:
       sample_and_unmapped_bams = sample_and_unmapped_bams,
       references = references,
-      #dragmap_reference = dragmap_reference,
-      #dragmap_binary = dragmap_binary,
+      dragmap_reference = dragmap_reference,
+      dragmap_binary = dragmap_binary,
       scatter_settings = scatter_settings,
       papi_settings = papi_settings,
 
@@ -153,9 +153,9 @@ workflow WholeGenomeGermlineSingleSampleTerra {
 
       provide_bam_output = provide_bam_output,
       use_gatk3_haplotype_caller = use_gatk3_haplotype_caller,
-      #run_dragen_mode = run_dragen_mode,
-      #perform_bqsr = perform_bqsr,
-      #use_bwa_mem = use_bwa_mem
+      run_dragen_mode = run_dragen_mode,
+      perform_bqsr = perform_bqsr,
+      use_bwa_mem = use_bwa_mem
   }
 
   # Outputs that will be retained when execution is complete
