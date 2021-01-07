@@ -28,7 +28,7 @@ version 1.0
 ## page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
 ## licensing information pertaining to the included programs.
 
-import "WholeGenomeGermlineSingleSample.wdl" as WholeGenomeGermlineSingleSample
+import "../../../../../../beta-pipelines/broad/dna_seq/germline/single_sample/wgs/WholeGenomeGermlineSingleSample.wdl" as WholeGenomeGermlineSingleSample
 import "../../../../../../structs/dna_seq/DNASeqStructs.wdl"
 
 # WORKFLOW DEFINITION
@@ -39,7 +39,7 @@ workflow WholeGenomeGermlineSingleSampleTerra {
   input {
     String sample_and_unmapped_bams_sample_name
     String sample_and_unmapped_bams_base_file_name
-    Array[File] sample_and_unmapped_bams_flowcell_unmapped_bams
+    File sample_and_unmapped_bams_flowcell_unmapped_bam
     String sample_and_unmapped_bams_final_gvcf_base_name
     String sample_and_unmapped_bams_unmapped_bam_suffix
 
@@ -90,7 +90,7 @@ workflow WholeGenomeGermlineSingleSampleTerra {
   SampleAndUnmappedBams sample_and_unmapped_bams = object {
     sample_name: sample_and_unmapped_bams_sample_name,
     base_file_name: sample_and_unmapped_bams_base_file_name,
-    flowcell_unmapped_bams: sample_and_unmapped_bams_flowcell_unmapped_bams,
+    flowcell_unmapped_bams: [sample_and_unmapped_bams_flowcell_unmapped_bam],
     final_gvcf_base_name: sample_and_unmapped_bams_final_gvcf_base_name,
     unmapped_bam_suffix: sample_and_unmapped_bams_unmapped_bam_suffix
   }
