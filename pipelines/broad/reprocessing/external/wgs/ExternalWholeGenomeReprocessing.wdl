@@ -153,7 +153,7 @@ workflow ExternalWholeGenomeReprocessing {
     File raw_wgs_metrics = WholeGenomeReprocessing.raw_wgs_metrics
 
     File duplicate_metrics = WholeGenomeReprocessing.duplicate_metrics
-    File output_bqsr_reports = WholeGenomeReprocessing.output_bqsr_reports
+    File? output_bqsr_reports = WholeGenomeReprocessing.output_bqsr_reports
 
     File gvcf_summary_metrics = WholeGenomeReprocessing.gvcf_summary_metrics
     File gvcf_detail_metrics = WholeGenomeReprocessing.gvcf_detail_metrics
