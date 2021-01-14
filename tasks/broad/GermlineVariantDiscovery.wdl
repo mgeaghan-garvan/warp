@@ -95,7 +95,10 @@ task HaplotypeCaller_GATK4_VCF {
     Boolean run_dragen_mode = false
     File? dragstr_model
     String? gatk_docker
+    Int memory_multiplier = 1
   }
+  
+  Int memory_size = ceil(6.5 * memory_multiplier)
 
   String default_gatk_docker = if run_dragen_mode then "us.gcr.io/broad-dsde-methods/broad-gatk-snapshots/dragen_final_test_v2" else "us.gcr.io/broad-gatk/gatk:4.1.8.0"
   String gatk_docker_to_use = select_first([gatk_docker, default_gatk_docker])
@@ -137,11 +140,10 @@ task HaplotypeCaller_GATK4_VCF {
   runtime {
     docker: gatk_docker_to_use
     preemptible: preemptible_tries
-    memory: "10 GiB"
+    memory: "~{memory_size} GiB"
     cpu: "2"
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size + " HDD"
-    maxRetries: 3
   }
 
   output {
