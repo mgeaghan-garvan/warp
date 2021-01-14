@@ -141,7 +141,7 @@ workflow ExternalExomeReprocessing {
     File? fingerprint_detail_metrics = ExomeReprocessing.fingerprint_detail_metrics
 
     File duplicate_metrics = ExomeReprocessing.duplicate_metrics
-    File output_bqsr_reports = ExomeReprocessing.output_bqsr_reports
+    File? output_bqsr_reports = ExomeReprocessing.output_bqsr_reports
 
     File gvcf_summary_metrics = ExomeReprocessing.gvcf_summary_metrics
     File gvcf_detail_metrics = ExomeReprocessing.gvcf_detail_metrics
