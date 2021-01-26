@@ -28,7 +28,7 @@ version 1.0
 ## page at https://hub.docker.com/r/broadinstitute/genomes-in-the-cloud/ for detailed
 ## licensing information pertaining to the included programs.
 
-import "../../../../../../beta-pipelines/broad/dna_seq/germline/single_sample/wgs/WholeGenomeGermlineSingleSample.wdl" as WholeGenomeGermlineSingleSample
+import "WholeGenomeGermlineSingleSample.wdl" as WholeGenomeGermlineSingleSample
 import "../../../../../../structs/dna_seq/DNASeqStructs.wdl"
 
 # WORKFLOW DEFINITION
@@ -63,12 +63,6 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     File reference_evaluation_interval_list
     File reference_haplotype_database_file
 
-    File? dragmap_reference_reference_bin
-    File? dragmap_reference_reference_index_bin
-    File? dragmap_reference_hash_table_cmp
-
-    File? dragmap_binary
-
     Int scatter_settings_haplotype_scatter_count
     Int scatter_settings_break_bands_at_multiples_of
 
@@ -80,11 +74,8 @@ workflow WholeGenomeGermlineSingleSampleTerra {
 
     File wgs_coverage_interval_list
 
-    Boolean provide_bam_output = false
-    Boolean use_gatk3_haplotype_caller = false
-    Boolean run_dragen_mode = true
-    Boolean perform_bqsr = true
-    Boolean use_bwa_mem = true
+    Boolean? provide_bam_output
+    Boolean? use_gatk3_haplotype_caller
   }
 
   SampleAndUnmappedBams sample_and_unmapped_bams = object {
@@ -124,14 +115,6 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     haplotype_database_file: reference_haplotype_database_file
   }
 
-  if (defined(dragmap_reference_reference_bin) && defined(dragmap_reference_reference_index_bin) && defined(dragmap_reference_hash_table_cmp)) {
-    DragmapReference dragmap_reference = object {
-      reference_bin: dragmap_reference_reference_bin,
-      reference_index_bin: dragmap_reference_reference_index_bin,
-      hash_table_cmp: dragmap_reference_hash_table_cmp
-    }
-  }
-
   PapiSettings papi_settings = object {
     preemptible_tries: papi_settings_preemptible_tries,
     agg_preemptible_tries: papi_settings_agg_preemptible_tries
@@ -141,8 +124,6 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     input:
       sample_and_unmapped_bams = sample_and_unmapped_bams,
       references = references,
-      dragmap_reference = dragmap_reference,
-      dragmap_binary = dragmap_binary,
       scatter_settings = scatter_settings,
       papi_settings = papi_settings,
 
@@ -152,10 +133,7 @@ workflow WholeGenomeGermlineSingleSampleTerra {
       wgs_coverage_interval_list = wgs_coverage_interval_list,
 
       provide_bam_output = provide_bam_output,
-      use_gatk3_haplotype_caller = use_gatk3_haplotype_caller,
-      run_dragen_mode = run_dragen_mode,
-      perform_bqsr = perform_bqsr,
-      use_bwa_mem = use_bwa_mem
+      use_gatk3_haplotype_caller = use_gatk3_haplotype_caller
   }
 
   # Outputs that will be retained when execution is complete
