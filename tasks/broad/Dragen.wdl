@@ -61,6 +61,7 @@ task CalibrateDragstrModel {
     File ref_dict
     File str_table_file
     File alignment ## can handle cram or bam.
+    File alignment_index
     String docker = "us.gcr.io/broad-dsde-methods/broad-gatk-snapshots/dragen_final_test_v2"
     Int preemptible_tries = 3
     Int threads = 4
@@ -76,8 +77,7 @@ task CalibrateDragstrModel {
 
   command <<<
     set -x
-    samtools index -@ ~{threads} ~{alignment}
-    gatk --java-options "-Xmx2g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+    gatk --java-options "-Xmx2g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -Dsamjdk.reference_fasta=~{ref_fasta}" \
       CalibrateDragstrModel \
         -R ~{ref_fasta} \
         -I ~{alignment} \

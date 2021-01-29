@@ -48,6 +48,7 @@ workflow VariantCalling {
          ref_fasta_idx = ref_fasta_index,
          ref_dict = ref_dict,
          alignment = input_bam,
+         alignment_index = input_bam_index,
          str_table_file = ComposeSTRTableFile.str_table_file
     }
   }
