@@ -18,6 +18,7 @@ struct ReferenceFasta {
   File ref_bwt
   File ref_ann
   File ref_pac
+  File? ref_str
 }
 
 struct DragmapReference {

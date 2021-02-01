@@ -20,6 +20,7 @@ workflow VariantCalling {
     File ref_fasta
     File ref_fasta_index
     File ref_dict
+    File? ref_str
     File dbsnp_vcf
     File dbsnp_vcf_index
     String base_file_name
@@ -36,12 +37,6 @@ workflow VariantCalling {
   }
 
   if (run_dragen_mode) {
-    call Dragen.ComposeSTRTableFile as ComposeSTRTableFile {
-       input:
-         ref_fasta = ref_fasta,
-         ref_fasta_idx = ref_fasta_index,
-         ref_dict = ref_dict,
-    }
     call Dragen.CalibrateDragstrModel as DragstrAutoCalibration {
        input:
          ref_fasta = ref_fasta,
@@ -49,7 +44,7 @@ workflow VariantCalling {
          ref_dict = ref_dict,
          alignment = input_bam,
          alignment_index = input_bam_index,
-         str_table_file = ComposeSTRTableFile.str_table_file
+         str_table_file = select_first([ref_str])
     }
   }
 
