@@ -94,14 +94,11 @@ task HaplotypeCaller_GATK4_VCF {
     Int hc_scatter
     Boolean run_dragen_mode = false
     File? dragstr_model
-    String? gatk_docker
+    String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.2.0.0"
     Int memory_multiplier = 1
   }
   
   Int memory_size = ceil(6.5 * memory_multiplier)
-
-  String default_gatk_docker = if run_dragen_mode then "us.gcr.io/broad-dsde-methods/broad-gatk-snapshots/dragen_final_test_v2" else "us.gcr.io/broad-gatk/gatk:4.1.8.0"
-  String gatk_docker_to_use = select_first([gatk_docker, default_gatk_docker])
 
   String output_suffix = if make_gvcf then ".g.vcf.gz" else ".vcf.gz"
   String output_file_name = vcf_basename + output_suffix
@@ -138,7 +135,7 @@ task HaplotypeCaller_GATK4_VCF {
   >>>
 
   runtime {
-    docker: gatk_docker_to_use
+    docker: gatk_docker
     preemptible: preemptible_tries
     memory: "~{memory_size} GiB"
     cpu: "2"
