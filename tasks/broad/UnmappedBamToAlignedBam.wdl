@@ -80,6 +80,7 @@ workflow UnmappedBamToAlignedBam {
         input:
           input_bam = unmapped_bam,
           bwa_commandline = bwa_commandline,
+          dragmap_binary = select_first([dragmap_binary]),
           output_bam_basename = unmapped_bam_basename + ".aligned.unsorted",
           reference_fasta = references.reference_fasta,
           compression_level = compression_level,
