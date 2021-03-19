@@ -84,7 +84,8 @@ workflow UnmappedBamToAlignedBam {
           reference_fasta = references.reference_fasta,
           compression_level = compression_level,
           preemptible_tries = papi_settings.preemptible_tries,
-          hard_clip_reads = hard_clip_reads
+          hard_clip_reads = hard_clip_reads,
+          use_bwa_mem = use_bwa_mem
       }
     }
 

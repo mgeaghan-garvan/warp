@@ -69,8 +69,6 @@ workflow SplitLargeReadGroup {
       }
     }
     if (!use_bwa_mem) {
-      # select_first will fail if no dragmap_reference is provided.
-      # TODO Maybe call an error task to give a more descriptive error message?
       call DragmapAlignment.SamToFastqAndDragmapAndMba as SamToFastqAndDragmapAndMba {
         input:
           input_bam = unmapped_bam,
