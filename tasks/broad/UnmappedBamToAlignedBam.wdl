@@ -83,6 +83,7 @@ workflow UnmappedBamToAlignedBam {
           dragmap_binary = select_first([dragmap_binary]),
           output_bam_basename = unmapped_bam_basename + ".aligned.unsorted",
           reference_fasta = references.reference_fasta,
+          dragmap_reference = select_first([dragmap_reference]),
           compression_level = compression_level,
           preemptible_tries = papi_settings.preemptible_tries,
           hard_clip_reads = hard_clip_reads,
@@ -105,8 +106,6 @@ workflow UnmappedBamToAlignedBam {
         }
       }
       if (!use_bwa_mem) {
-        # select_first will fail if no dragmap_reference is provided.
-        # TODO Maybe call an error task to give a more descriptive error message?
         call DragmapAlignment.SamToFastqAndDragmapAndMba as SamToFastqAndDragmapAndMba {
           input:
             input_bam = unmapped_bam,
