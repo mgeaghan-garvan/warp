@@ -10,6 +10,7 @@ workflow VariantCalling {
 
   input {
     Boolean run_dragen_mode = false
+    Boolean use_spanning_event_genotyping = true
     File calling_interval_list
     File evaluation_interval_list
     Int haplotype_scatter_count
@@ -99,6 +100,7 @@ workflow VariantCalling {
           make_gvcf = make_gvcf,
           make_bamout = make_bamout,
           run_dragen_mode = run_dragen_mode,
+          use_spanning_event_genotyping = use_spanning_event_genotyping,
           dragstr_model = DragstrAutoCalibration.dragstr_model,
           preemptible_tries = agg_preemptible_tries
        }

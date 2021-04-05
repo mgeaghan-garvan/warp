@@ -38,7 +38,7 @@ task SamToFastqAndDragmapAndMba {
   Float ref_size = size(reference_fasta.ref_fasta, "GiB") + size(reference_fasta.ref_fasta_index, "GiB") + size(reference_fasta.ref_dict, "GiB")
   Float bwa_ref_size = ref_size + size(reference_fasta.ref_alt, "GiB") + size(reference_fasta.ref_amb, "GiB") + size(reference_fasta.ref_ann, "GiB") + size(reference_fasta.ref_bwt, "GiB") + size(reference_fasta.ref_pac, "GiB") + size(reference_fasta.ref_sa, "GiB")
   Float dragmap_ref_size = size(dragmap_reference.reference_bin, "GiB") + size(dragmap_reference.reference_index_bin, "GiB") + size(dragmap_reference.hash_table_cmp, "GiB")
-  Float disk_multiplier = 6
+  Float disk_multiplier = 8
   Int disk_size = ceil(unmapped_bam_size + bwa_ref_size + dragmap_ref_size + (disk_multiplier * unmapped_bam_size) + 20)
 
   String dragmap_commandline = "-1 reads1.fastq.gz -2 reads2.fastq.gz -r dragen_reference"
@@ -62,7 +62,7 @@ task SamToFastqAndDragmapAndMba {
 
     samtools fastq -1 reads1.fastq.gz -2 reads2.fastq.gz -0 /dev/null -s /dev/null -n ~{input_bam}
 
-    ~{dragmap_binary} ~{dragmap_commandline} 2> >(tee ~{output_bam_basename}.dragmap.stderr.log >&2) | \
+    ~{dragmap_binary} ~{dragmap_commandline} 2> >(tee ~{output_bam_basename}.dragmap.stderr.log >&2) | samtools view -h -O BAM - > aligned.bam
     java -Dsamjdk.compression_level=~{compression_level} -Xms1000m -Xmx1000m -jar ~{picard_jar} \
       MergeBamAlignment \
       VALIDATION_STRINGENCY=SILENT \
@@ -71,7 +71,7 @@ task SamToFastqAndDragmapAndMba {
       ATTRIBUTES_TO_REMOVE=RG \
       ATTRIBUTES_TO_REMOVE=NM \
       ATTRIBUTES_TO_REMOVE=MD \
-      ALIGNED_BAM=/dev/stdin \
+      ALIGNED_BAM=aligned.bam \
       UNMAPPED_BAM=~{input_bam} \
       OUTPUT=~{output_bam_basename}.bam \
       REFERENCE_SEQUENCE=~{reference_fasta.ref_fasta} \

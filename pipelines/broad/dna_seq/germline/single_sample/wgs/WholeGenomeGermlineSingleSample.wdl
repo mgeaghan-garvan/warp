@@ -57,6 +57,7 @@ workflow WholeGenomeGermlineSingleSample {
     Boolean provide_bam_output = false
     Boolean use_gatk3_haplotype_caller = true
     Boolean run_dragen_mode = false
+    Boolean use_spanning_event_genotyping = true
     Boolean perform_bqsr = true
     Boolean use_bwa_mem = true
   }
@@ -144,6 +145,7 @@ workflow WholeGenomeGermlineSingleSample {
   call ToGvcf.VariantCalling as BamToGvcf {
     input:
       run_dragen_mode = run_dragen_mode,
+      use_spanning_event_genotyping = use_spanning_event_genotyping,
       calling_interval_list = references.calling_interval_list,
       evaluation_interval_list = references.evaluation_interval_list,
       haplotype_scatter_count = scatter_settings.haplotype_scatter_count,
