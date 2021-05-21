@@ -108,6 +108,8 @@ task MarkDuplicates {
     String? read_name_regex
     Int memory_multiplier = 1
     Int additional_disk = 20
+
+    Float? sorting_collection_size_ratio
   }
 
   # The merged bam will be smaller than the sum of the parts so we need to account for the unmerged inputs and the merged output.
@@ -130,6 +132,7 @@ task MarkDuplicates {
       METRICS_FILE=~{metrics_filename} \
       VALIDATION_STRINGENCY=SILENT \
       ~{"READ_NAME_REGEX=" + read_name_regex} \
+      ~{"SORTING_COLLECTION_SIZE_RATIO=" + sorting_collection_size_ratio} \
       OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 \
       ASSUME_SORT_ORDER="queryname" \
       CLEAR_DT="false" \
@@ -209,6 +212,7 @@ task MarkDuplicatesSpark {
 task BaseRecalibrator {
   input {
     File input_bam
+    File input_bam_index
     String recalibration_report_filename
     Array[String] sequence_group_interval
     File dbsnp_vcf
@@ -262,6 +266,7 @@ task BaseRecalibrator {
 task ApplyBQSR {
   input {
     File input_bam
+    File input_bam_index
     String output_bam_basename
     File recalibration_report
     Array[String] sequence_group_interval

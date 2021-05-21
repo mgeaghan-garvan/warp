@@ -32,13 +32,13 @@ import "../../../../../../tasks/broad/UnmappedBamToAlignedBam.wdl" as ToBam
 import "../../../../../../tasks/broad/AggregatedBamQC.wdl" as AggregatedQC
 import "../../../../../../tasks/broad/Qc.wdl" as QC
 import "../../../../../../tasks/broad/BamToCram.wdl" as ToCram
-import "../../../../../../tasks/broad/VariantCalling.wdl" as ToGvcf
+import "../../../../../../pipelines/broad/dna_seq/germline/variant_calling/VariantCalling.wdl" as ToGvcf
 import "../../../../../../structs/dna_seq/DNASeqStructs.wdl"
 
 # WORKFLOW DEFINITION
 workflow WholeGenomeGermlineSingleSample {
 
-  String pipeline_version = "3.0.0"
+  String pipeline_version = "2.3.3"
 
   input {
     SampleAndUnmappedBams sample_and_unmapped_bams
@@ -143,6 +143,7 @@ workflow WholeGenomeGermlineSingleSample {
       break_bands_at_multiples_of = scatter_settings.break_bands_at_multiples_of,
       contamination = UnmappedBamToAlignedBam.contamination,
       input_bam = UnmappedBamToAlignedBam.output_bam,
+      input_bam_index = UnmappedBamToAlignedBam.output_bam_index,
       ref_fasta = references.reference_fasta.ref_fasta,
       ref_fasta_index = references.reference_fasta.ref_fasta_index,
       ref_dict = references.reference_fasta.ref_dict,

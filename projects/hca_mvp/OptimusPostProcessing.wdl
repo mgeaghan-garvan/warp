@@ -18,8 +18,8 @@ workflow OptimusPostProcessing {
     String project_id
     String project_name
     String output_basename
-    String staging_bucket
-    String version_timestamp
+    String staging_area = "gs://broad-dsp-monster-hca-prod-lantern/"
+    String version_timestamp = "2021-05-24T12:00:00.000000Z"
   }
 
 
@@ -27,6 +27,9 @@ workflow OptimusPostProcessing {
   String pipeline_version = "1.0.0"
 
   String project_stratum_string = "project=" + project_id + ";library=" + library[0] + ";species=" + species[0] + ";organ=" + organ[0]
+
+  # Build staging bucket
+  String staging_bucket = staging_area + project_id + "/staging/"
 
   call PostProcessing.CheckMetadata {
       input:
@@ -52,18 +55,11 @@ workflow OptimusPostProcessing {
       output_basename = output_basename
   }
 
-  call PostProcessing.GetProtocolMetadata {
-    input:
-      links_jsons = links_jsons,
-      output_basename = output_basename
-  }
-
   call PostProcessing.CreateAdapterJson {
     input:
       project_loom = MergeLooms.project_loom,
       project_id = project_id,
       input_metadata_json = GetInputMetadata.input_metadata_json,
-      protocol_metadata_json = GetProtocolMetadata.protocol_metadata_json,
       project_stratum_string = project_stratum_string,
       staging_bucket = staging_bucket,
       version_timestamp = version_timestamp,

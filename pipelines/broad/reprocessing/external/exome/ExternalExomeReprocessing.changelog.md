@@ -1,3 +1,41 @@
+# 2.4.5
+2021-03-17
+
+* Promoted VariantCalling to be a top-level workflow
+
+# 2.4.4
+2021-02-22
+
+* Added SORTING_COLLECTION_SIZE_RATIO as an optional task input to MarkDuplicates
+
+# 2.4.3
+2021-02-08
+
+* Calculate java memory value from the optional memory input value for CramToUnmappedBams java tasks
+
+# 2.4.2
+2021-02-02
+
+* Minor changes to support CramToUnmappedBams as an independent versioned pipeline
+    * Changed path of the relative import
+    * Added 'base_file_name' as an input to CramToUnmappedBams
+
+# 2.4.1
+2020-12-21
+
+* Passed an input bam index to several subworkflows, so the pipeline passes on singularity for sharded BQSR
+
+# 2.4.0
+2021-01-06
+
+* Change bait_set_name to type String, so its type is consistent with its subworkflow and plumbing inputs json
+
+# 2.3.0
+2020-12-16
+
+* Fixed error in relative import statement in Alignment subworkflow.
+* Fixed syntax bug in Alignment task SamToFastqAndBwaMemAndMba
+
 # 2.2.0
 2020-10-20
 

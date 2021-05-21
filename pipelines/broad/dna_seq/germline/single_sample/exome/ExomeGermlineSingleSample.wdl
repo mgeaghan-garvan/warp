@@ -33,13 +33,14 @@ import "../../../../../../tasks/broad/AggregatedBamQC.wdl" as AggregatedQC
 import "../../../../../../tasks/broad/Qc.wdl" as QC
 import "../../../../../../tasks/broad/BamProcessing.wdl" as Processing
 import "../../../../../../tasks/broad/BamToCram.wdl" as ToCram
-import "../../../../../../tasks/broad/VariantCalling.wdl" as ToGvcf
+import "../../../../../../pipelines/broad/dna_seq/germline/variant_calling/VariantCalling.wdl" as ToGvcf
 import "../../../../../../structs/dna_seq/DNASeqStructs.wdl"
 
 # WORKFLOW DEFINITION
 workflow ExomeGermlineSingleSample {
 
-  String pipeline_version = "2.2.0"
+
+  String pipeline_version = "2.4.3"
 
   input {
     PapiSettings papi_settings
@@ -52,7 +53,7 @@ workflow ExomeGermlineSingleSample {
 
     File target_interval_list
     File bait_interval_list
-    File bait_set_name
+    String bait_set_name
 
     Boolean provide_bam_output = false
   }
@@ -125,6 +126,7 @@ workflow ExomeGermlineSingleSample {
       break_bands_at_multiples_of = scatter_settings.break_bands_at_multiples_of,
       contamination = UnmappedBamToAlignedBam.contamination,
       input_bam = UnmappedBamToAlignedBam.output_bam,
+      input_bam_index = UnmappedBamToAlignedBam.output_bam_index,
       ref_fasta = references.reference_fasta.ref_fasta,
       ref_fasta_index = references.reference_fasta.ref_fasta_index,
       ref_dict = references.reference_fasta.ref_dict,

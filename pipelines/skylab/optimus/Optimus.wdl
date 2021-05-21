@@ -3,7 +3,7 @@ version 1.0
 import "../../../tasks/skylab/FastqProcessing.wdl" as FastqProcessing
 import "../../../tasks/skylab/MergeSortBam.wdl" as Merge
 import "../../../tasks/skylab/CreateCountMatrix.wdl" as Count
-import "../../../tasks/skylab/StarAlignBamSingleEnd.wdl" as StarAlignBam
+import "../../../tasks/skylab/StarAlign.wdl" as StarAlignBam
 import "../../../tasks/skylab/TagGeneExon.wdl" as TagGeneExon
 import "../../../tasks/skylab/SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
 import "../../../tasks/skylab/TagSortBam.wdl" as TagSortBam
@@ -48,6 +48,9 @@ workflow Optimus {
     # Set to true to override input checks and allow pipeline to proceed with invalid input
     Boolean force_no_check = false
 
+    # Set to true to count reads in stranded mode
+    String use_strand_info = "false"
+
     # this pipeline does not set any preemptible varibles and only relies on the task-level preemptible settings
     # you could override the tasklevel preemptible settings by passing it as one of the workflows inputs
     # for example: `"Optimus.StarAlign.preemptible": 3` will let the StarAlign task, which by default disables the
@@ -56,7 +59,7 @@ workflow Optimus {
 
   # version of this pipeline
 
-  String pipeline_version = "4.1.8"
+  String pipeline_version = "4.2.4"
 
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
@@ -75,6 +78,7 @@ workflow Optimus {
     whitelist: "10x genomics cell barcode whitelist"
     tenX_v3_chemistry: "assume 10X Genomics v3 chemistry with 12bp UMI (in contrast to default v2 with 10bp UMI)"
     force_no_check: "Set to true to override input checks and allow pipeline to proceed with invalid input"
+    use_strand_info: "Set to true to count reads in stranded mode"
   }
 
   call OptimusInputChecks.checkOptimusInput {
@@ -121,7 +125,7 @@ workflow Optimus {
           gene_name_tag = "GE",
           gene_strand_tag = "GS",
           gene_function_tag = "XF",
-          use_strand_info = "false"
+          use_strand_info = use_strand_info
       }
     }
 

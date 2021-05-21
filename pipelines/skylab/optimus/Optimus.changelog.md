@@ -1,3 +1,37 @@
+# 4.2.4
+
+2021-04-07 (Date of Last Commit)
+
+* Changed the name of the wdl StarAlignSingleEnd.wdl to StarAlign.wdl
+* Added a star dockerfile to STAR version 2.7.8a
+
+# 4.2.3
+
+2021-02-23 (Date of Last Commit)
+
+* Made changes to emptydrops tool wrappper script to not fail in cases with small number of cells, instead, create empty drop result files with NAs.
+* Updated the docker in RunEmptyDrops.wdl task to 0.1.4 Updated emptyDropsWrapper.R in the docker
+
+# 4.2.2
+
+2021-01-04 (Date of Last Commit)
+
+* Added an optional input for the pipeline to read in stranded mode which has a default of false
+
+# 4.2.1
+
+2020-12-04 (Date of Last Commit)
+
+* Updated the docker in LoomUtils.wdl task to 0.0.6
+
+# 4.2.0
+
+2020-12-04 (Date of Last Commit)
+
+* Added "Gene" as row attribute in the loom file duplicating "gene_names" to make the output loom compatible with scanpy 
+* Added "CellID" (duplicate of ""cell_names") and "input_id" as column attributes in the loom file to make the output loom compatible with scanpy and Cumulus
+* Updated the docker in LoomUtils.wdl task to 0.0.5 to incorporate the above changes
+
 # 4.1.8
 
 2020-11-24 (Date of Last Commit)

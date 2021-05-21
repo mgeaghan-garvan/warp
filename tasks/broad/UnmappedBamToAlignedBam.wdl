@@ -191,6 +191,25 @@ workflow UnmappedBamToAlignedBam {
   Int bqsr_divisor = if potential_bqsr_divisor > 1 then potential_bqsr_divisor else 1
 
   # Perform Base Quality Score Recalibration (BQSR) on the sorted BAM in parallel
+  scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping) {
+    # Generate the recalibration model by interval
+    call Processing.BaseRecalibrator as BaseRecalibrator {
+      input:
+        input_bam = SortSampleBam.output_bam,
+        input_bam_index = SortSampleBam.output_bam_index,
+        recalibration_report_filename = sample_and_unmapped_bams.base_file_name + ".recal_data.csv",
+        sequence_group_interval = subgroup,
+        dbsnp_vcf = references.dbsnp_vcf,
+        dbsnp_vcf_index = references.dbsnp_vcf_index,
+        known_indels_sites_vcfs = references.known_indels_sites_vcfs,
+        known_indels_sites_indices = references.known_indels_sites_indices,
+        ref_dict = references.reference_fasta.ref_dict,
+        ref_fasta = references.reference_fasta.ref_fasta,
+        ref_fasta_index = references.reference_fasta.ref_fasta_index,
+        bqsr_scatter = bqsr_divisor,
+        preemptible_tries = papi_settings.agg_preemptible_tries
+    }
+  }
 
   if (perform_bqsr) {
     scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping) {
@@ -216,28 +235,19 @@ workflow UnmappedBamToAlignedBam {
     # The reports are always the same size
     call Processing.GatherBqsrReports as GatherBqsrReports {
       input:
-        input_bqsr_reports = BaseRecalibrator.recalibration_report,
-        output_report_filename = sample_and_unmapped_bams.base_file_name + ".recal_data.csv",
-        preemptible_tries = papi_settings.preemptible_tries
-    }
-
-    scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) {
-      # Apply the recalibration model by interval
-      call Processing.ApplyBQSR as ApplyBQSR {
-        input:
-          input_bam = SortSampleBam.output_bam,
-          output_bam_basename = recalibrated_bam_basename,
-          recalibration_report = GatherBqsrReports.output_bqsr_report,
-          sequence_group_interval = subgroup,
-          ref_dict = references.reference_fasta.ref_dict,
-          ref_fasta = references.reference_fasta.ref_fasta,
-          ref_fasta_index = references.reference_fasta.ref_fasta_index,
-          bqsr_scatter = bqsr_divisor,
-          compression_level = compression_level,
-          preemptible_tries = papi_settings.agg_preemptible_tries,
-          bin_base_qualities = bin_base_qualities,
-          somatic = somatic
-      }
+        input_bam = SortSampleBam.output_bam,
+        input_bam_index = SortSampleBam.output_bam_index,
+        output_bam_basename = recalibrated_bam_basename,
+        recalibration_report = GatherBqsrReports.output_bqsr_report,
+        sequence_group_interval = subgroup,
+        ref_dict = references.reference_fasta.ref_dict,
+        ref_fasta = references.reference_fasta.ref_fasta,
+        ref_fasta_index = references.reference_fasta.ref_fasta_index,
+        bqsr_scatter = bqsr_divisor,
+        compression_level = compression_level,
+        preemptible_tries = papi_settings.agg_preemptible_tries,
+        bin_base_qualities = bin_base_qualities,
+        somatic = somatic
     }
   }
 
