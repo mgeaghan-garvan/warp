@@ -65,7 +65,7 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     File reference_haplotype_database_file
 
     File? dragmap_reference_reference_bin
-    File? dragmap_reference_reference_index_bin
+    File? dragmap_reference_hash_table_cfg_bin
     File? dragmap_reference_hash_table_cmp
 
     Int scatter_settings_haplotype_scatter_count
@@ -125,10 +125,10 @@ workflow WholeGenomeGermlineSingleSampleTerra {
     haplotype_database_file: reference_haplotype_database_file
   }
 
-  if (defined(dragmap_reference_reference_bin) && defined(dragmap_reference_reference_index_bin) && defined(dragmap_reference_hash_table_cmp)) {
+  if (defined(dragmap_reference_reference_bin) && defined(dragmap_reference_hash_table_cfg_bin) && defined(dragmap_reference_hash_table_cmp)) {
     DragmapReference dragmap_reference = object {
       reference_bin: dragmap_reference_reference_bin,
-      reference_index_bin: dragmap_reference_reference_index_bin,
+      hash_table_cfg_bin: dragmap_reference_hash_table_cfg_bin,
       hash_table_cmp: dragmap_reference_hash_table_cmp
     }
   }
