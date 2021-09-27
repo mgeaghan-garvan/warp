@@ -58,7 +58,7 @@ task HaplotypeCaller_GATK35_GVCF {
       -o ~{gvcf_basename}.vcf.gz \
       -I local.sharded.bam \
       -L ~{interval_list} \
-      -ERC GVCF \
+      -ERC NONE \
       --max_alternate_alleles 3 \
       -variant_index_parameter 128000 \
       -variant_index_type LINEAR \
