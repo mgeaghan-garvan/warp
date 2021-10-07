@@ -68,9 +68,9 @@ task SamToFastqAndBwaMemAndMba {
         INPUT=~{input_bam} \
         FASTQ=/dev/stdout \
         INTERLEAVE=true \
-        NON_PF=true | \
-      /usr/gitc/~{bwa_commandline} /dev/stdin - 2> >(tee ~{output_bam_basename}.bwa.stderr.log >&2) | \
-      /usr/gitc/k8 /usr/gitc/bwa-postalt.js ~{reference_fasta.ref_alt} /dev/stdin | \
+        NON_PF=true > asdf.fastq
+      /usr/gitc/~{bwa_commandline} asdf.fastq - 2> >(tee ~{output_bam_basename}.bwa.stderr.log >&2) > asdf.sam
+      /usr/gitc/k8 /usr/gitc/bwa-postalt.js ~{reference_fasta.ref_alt} asdf.fastq > asdf.postprocessed.sam
       java -Dsamjdk.compression_level=~{compression_level} -Xms1000m -Xmx1000m -jar /usr/gitc/picard.jar \
         MergeBamAlignment \
         VALIDATION_STRINGENCY=SILENT \
@@ -78,7 +78,7 @@ task SamToFastqAndBwaMemAndMba {
         ATTRIBUTES_TO_RETAIN=X0 \
         ATTRIBUTES_TO_REMOVE=NM \
         ATTRIBUTES_TO_REMOVE=MD \
-        ALIGNED_BAM=/dev/stdin \
+        ALIGNED_BAM=asdf.postprocessed.sam \
         UNMAPPED_BAM=~{input_bam} \
         OUTPUT=~{output_bam_basename}.bam \
         REFERENCE_SEQUENCE=~{reference_fasta.ref_fasta} \
@@ -118,6 +118,9 @@ task SamToFastqAndBwaMemAndMba {
   }
   output {
     File output_bam = "~{output_bam_basename}.bam"
+    File fastq = "asdf.fastq"
+    File sam = "asdf.sam"
+    File postprocessed = "asdf.postprocessed.sam"
     File bwa_stderr_log = "~{output_bam_basename}.bwa.stderr.log"
   }
 }
