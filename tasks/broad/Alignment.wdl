@@ -62,7 +62,9 @@ task SamToFastqAndBwaMemAndMba {
     # set the bash variable needed for the command-line
     bash_ref_fasta=~{reference_fasta.ref_fasta}
     # if reference_fasta.ref_alt has data in it,
-    if [ -s ~{reference_fasta.ref_alt} ]; then
+    
+    # CHANGED
+    #if [ -s ~{reference_fasta.ref_alt} ]; then
       java -Xms1000m -Xmx1000m -jar /usr/gitc/picard.jar \
         SamToFastq \
         INPUT=~{input_bam} \
@@ -104,9 +106,9 @@ task SamToFastqAndBwaMemAndMba {
       grep -v "read 0 ALT contigs"
 
     # else reference_fasta.ref_alt is empty or could not be found
-    else
-      exit 1;
-    fi
+    #else
+    #  exit 1;
+    #fi
   >>>
   runtime {
     docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.4.7-1603303710"
