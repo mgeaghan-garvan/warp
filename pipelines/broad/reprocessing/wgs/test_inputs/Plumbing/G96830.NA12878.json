@@ -1,11 +1,12 @@
 {
-  "WholeGenomeReprocessing.input_cram": "gs://broad-gotc-test-storage/single_sample/plumbing/truth/{TRUTH_BRANCH}/20k/NA12878_PLUMBING.cram",
-  "WholeGenomeReprocessing.output_map": "gs://broad-gotc-test-storage/germline_single_sample/wgs/plumbing/bams/G96830.NA12878/readgroupid_to_bamfilename_map.txt",
+  "WholeGenomeReprocessing.input_cram": "gs://cpg-mgrb-main-upload/AAAAA_LP1001101-NTP_C01_ST-E00199_HK7NFCCXX.1.dupmarked.cram",
 
-  "WholeGenomeReprocessing.sample_name": "NA12878 PLUMBING",
-  "WholeGenomeReprocessing.base_file_name": "G96830.NA12878",
-  "WholeGenomeReprocessing.final_gvcf_base_name": "G96830.NA12878",
+  "WholeGenomeReprocessing.sample_name": "AAAAA_LP1001101-NTP_C01_ST-E00199_HK7NFCCXX.1",
+  "WholeGenomeReprocessing.base_file_name": "AAAAA_LP1001101-NTP_C01_ST-E00199_HK7NFCCXX.1",
+  "WholeGenomeReprocessing.final_gvcf_base_name": "AAAAA_LP1001101-NTP_C01_ST-E00199_HK7NFCCXX",
   "WholeGenomeReprocessing.unmapped_bam_suffix": ".unmapped.bam",
+  "WholeGenomeReprocessing.cram_ref_fasta": "gs://gcp-public-data--broad-references/hg38/v0/Homo_sapiens_assembly38.fasta",
+  "WholeGenomeReprocessing.cram_ref_fasta_index": "gs://gcp-public-data--broad-references/hg38/v0/Homo_sapiens_assembly38.fasta.fai",
 
   "WholeGenomeReprocessing.references": {
     "contamination_sites_ud": "gs://gcp-public-data--broad-references/hg38/v0/contamination-resources/1000g/1000g.phase3.100k.b38.vcf.gz.dat.UD",
@@ -37,6 +38,12 @@
     "haplotype_database_file": "gs://gcp-public-data--broad-references/hg38/v0/Homo_sapiens_assembly38.haplotype_database.txt"
   },
 
+  "WholeGenomeReprocessing.WholeGenomeGermlineSingleSample.dragmap_reference": {
+    "reference_bin": "gs://gcp-public-data--broad-references/hg38/v0/dragen_reference/reference.bin",
+    "hash_table_cfg_bin": "gs://gcp-public-data--broad-references/hg38/v0/dragen_reference/hash_table.cfg.bin",
+    "hash_table_cmp": "gs://gcp-public-data--broad-references/hg38/v0/dragen_reference/hash_table.cmp"
+  },
+
   "WholeGenomeReprocessing.scatter_settings": {
     "haplotype_scatter_count": 10,
     "break_bands_at_multiples_of": 100000
@@ -51,5 +58,7 @@
   "WholeGenomeReprocessing.papi_settings": {
     "preemptible_tries": 3,
     "agg_preemptible_tries": 3
-  }
+  },
+
+  "WholeGenomeReprocessing.WholeGenomeGermlineSingleSample.dragen_maximum_quality_mode": true
 }

@@ -61,8 +61,6 @@ workflow WholeGenomeReprocessing {
   }
 
   output {
-    Array[File] validation_report = CramToUnmappedBams.validation_report
-    Array[File] unmapped_bams = CramToUnmappedBams.unmapped_bams
 
     Array[File] quality_yield_metrics = WholeGenomeGermlineSingleSample.quality_yield_metrics
 

@@ -3,3 +3,6 @@ workflows:
   - name: WholeGenomeGermlineSingleSampleDragen
     subclass: WDL
     primaryDescriptorPath: /pipelines/broad/dna_seq/germline/single_sample/wgs/WholeGenomeGermlineSingleSample.wdl
+  - name: WholeGenomeGermlineReprocessDragen
+    subclass: WDL
+    primaryDescriptorPath: /pipelines/broad/reprocessing/wgs/WholeGenomeReprocessing.wdl
