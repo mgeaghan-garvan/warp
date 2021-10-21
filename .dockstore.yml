@@ -6,3 +6,6 @@ workflows:
   - name: WholeGenomeGermlineReprocessDragen
     subclass: WDL
     primaryDescriptorPath: /pipelines/broad/reprocessing/wgs/WholeGenomeReprocessing.wdl
+  - name: WholeGenomeGermlineFastqDragen
+    subclass: WDL
+    primaryDescriptorPath: /pipelines/broad/reprocessing/wgs/WholeGenomeFromFastq.wdl
