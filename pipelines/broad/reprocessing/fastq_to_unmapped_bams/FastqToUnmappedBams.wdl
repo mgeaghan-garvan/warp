@@ -35,7 +35,7 @@ workflow FastqToUnmappedBams {
       RGPL = RGPL,
       RGCN = RGCN,
       sample_name = sample_name,
-      disk_size = ceil((size(input_R1, "GiB") + size(input_R2, "GiB"))* 3) + additional_disk
+      disk_size = ceil((size(input_R1, "GiB") + size(input_R2, "GiB"))* 4) + additional_disk
   }
 
   Float unmapped_bam_size = size(FastqToSam.output_bam, "GiB")
@@ -75,7 +75,7 @@ task FastqToSam {
   Int java_mem = memory_in_MiB - 1000
 
   command <<<
-    java -Xmx~{java_mem}m -jar /usr/picard/picard.jar \
+    java -Xmx6000m -jar /usr/picard/picard.jar \
       FastqToSam \
       --FASTQ ~{input_R1} \
       --FASTQ2 ~{input_R2} \
@@ -90,8 +90,8 @@ task FastqToSam {
   >>>
   runtime {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
-    disks: "local-disk " + disk_size + " HDD"
-    memory: "~{memory_in_MiB} MiB"
+    disks: "local-disk " + 400 + " HDD"
+    memory: "6.5 GB"
     preemptible: 3
   }
 
