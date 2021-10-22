@@ -1,5 +1,18 @@
 version 1.0
 
+struct SampleInput {
+  File input_R1
+  File input_R2
+  String base_file_name
+  String final_gvcf_base_name
+  String sample_name
+  String RGID
+  String RGPL
+  String RGPU
+  String RGLB
+  String RGCN
+}
+
 struct SampleAndUnmappedBams {
   String base_file_name
   String? final_gvcf_base_name
