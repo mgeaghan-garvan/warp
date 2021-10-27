@@ -28,15 +28,15 @@ Multiple WGS parameters are adjusted for the WGS workflow to run in the DRAGEN-G
 ![dragen](./DRAGEN_Fig4_resize.jpg)
 
 #### Individual DRAGEN-GATK parameters
-The WGS workflow can be customized to mix and match different DRAGEN-related parameters. The default DRAGEN settings and descriptions are listed below and may be modified as needed: 
+The WGS workflow can be customized to mix and match different DRAGEN-related parameters. In general, the following booleans may be modified to run in different DRAGEN-realted features: 
 
-1. `use_bwa_mem` is false.
-    * When true, the workflow calls the DRAGEN DRAGMAP aligner instead of BWA mem.
-2.  `run_dragen_mode_variant_calling` is true.
-    *  The workflow creates a DRAGstr model with the GATK CalibrateDragstrModel tool and uses it for variant calling with HaplotypeCaller in --dragen-mode.
-3. `perform_bqsr` is optionally false.
-    * BQSR is not necessary for the DRAGEN pipeline as the DRAGstr model is used for base recalibration. 
-4. `dragen_mode_hard_filter` is false.
+1. `use_bwa_mem`
+    * When false, the workflow calls the DRAGEN DRAGMAP aligner instead of BWA mem.
+2.  `run_dragen_mode_variant_calling`
+    *  When true, the workflow creates a DRAGstr model with the GATK CalibrateDragstrModel tool and uses it for variant calling with HaplotypeCaller in --dragen-mode.
+3. `perform_bqsr`
+    * When false, turns off BQSR as it is not necessary for the DRAGEN pipeline; instead, base error correction is performed during variant calling. 
+4. `dragen_mode_hard_filter`
     * When true, the parameter turns on VCF hard filtering.
  
 
@@ -45,21 +45,21 @@ Although the DRAGEN parameters can be turned on and off as needed, there are two
 1. **dragen_functional_equivalence_mode**
 2. **dragen_maximum_quality_mode**
 
-The **dragen_functional_equivalence_mode** runs the pipeline so that it is functionally equivalent to the DRAGEN hardware. This mode has the following defaults:
+The **dragen_functional_equivalence_mode** runs the pipeline so that it the outputs are functionally equivalent to those produced with the DRAGEN hardware. This mode will automatically set the following parameters:
 1. `run_dragen_mode_variant_calling` is true.
 2. `use_bwa_mem` is false.
 3. `perform_bqsr` is false.
 4. `use_spanning_event_genotyping` is false.
-
-By setting the Dragen parameters as listed below, the WGS workflow produces outputs that are functionally equivalent to the DRAGEN pipeline. 
+5. `dragen_mode_hard_filter` is true.
 
 To learn more about how outputs are tested for functional equivalence, try the [Functional Equivalence workflow](https://app.terra.bio/#workspaces/broad-firecloud-dsde-methods/FunctionalEquivalence) in Terra.
 
-The **dragen_maximum_quality_mode** runs the pipeline using the DRAGMAP aligner and DRAGEN variant calling, but with additional parameters that produce maximum quality results that are **not** functionally equivalent to the DRAGEN hardware. This mode has the following defaults:
+The **dragen_maximum_quality_mode** runs the pipeline using the DRAGMAP aligner and DRAGEN variant calling, but with additional parameters that produce maximum quality results that are **not** functionally equivalent to the DRAGEN hardware. This mode will automatically set the following parameters:
 1. `run_dragen_mode_variant_calling` is true.
 2. `use_spanning_event_genotyping` is true.
 3. `use_bwa_mem` is false.
 4. `perform_bqsr` is false.
+5. `dragen_mode_hard_filter` is true.
 
 
 When the workflow applies the DRAGMAP aligner, it calls reference files specific to the aligner. These files are located in a [public Google bucket](https://storage.googleapis.com/gcp-public-data--broad-references/hg38/v0/) and described in the [Input descriptions](#input-descriptions). See the [reference README](https://storage.googleapis.com/gcp-public-data--broad-references/hg38/v0/README_dragen_gatk_resources.txt) for details on recreating DRAGEN references.
@@ -100,21 +100,21 @@ The following table describes the inputs imported from a struct. Although these 
 | final_gvcf_base_name | SampleAndUnmappedBams (sample_and_unmapped_bams) | Base name for the output GVCF file; can be set to a read group ID. | String |
 | flowcell_unmapped_bams | SampleAndUnmappedBams (sample_and_unmapped_bams) | Human whole-genome paired-end sequencing data in unmapped BAM (uBAM) format; each uBAM file contains one or more read groups all belonging to a single sample (SM). | Array of files | 
 | sample_name | SampleAndUnmappedBams (sample_and_unmapped_bams) | A string to describe the sample; can be set to a read group ID. | String |
-| unmapped_bam_suffix | SampleAndUnmappedBams (sample_and_unmapped_bams) | The suffice for the input UBAM file; must be consistent across files; (ex: “.bam”). | String |
+| unmapped_bam_suffix | SampleAndUnmappedBams (sample_and_unmapped_bams) | The suffice for the input uBAM file; must be consistent across files; (ex: “.unmapped.bam”). | String |
 | contamination_sites_ud | DNASeqSingleSampleReferences (references) | Contamination site files for the CheckContamination task.  | File |
-| ontamination_sites_bed | DNASeqSingleSampleReferences (references) | Contamination site files for the CheckContamination task. | File |
+| contamination_sites_bed | DNASeqSingleSampleReferences (references) | Contamination site files for the CheckContamination task. | File |
 | contamination_sites_mu | DNASeqSingleSampleReferences (references) | Contamination site files for the CheckContamination task. | File |
-| calling_interval_list | DNASeqSingleSampleReferences (references) | Interval list used for variant calling | File |
+| calling_interval_list | DNASeqSingleSampleReferences (references) | Interval list used for variant calling. | File |
 | reference_bin | DragmapReference (dragmap_reference) | Binary representation of the reference FASTA file used for the DRAGEN mode DRAGMAP aligner. | File |
 | hash_table_cfg_bin | DragmapReference (dragmap_reference) | Binary representation of the configuration for the hash table used for the DRAGEN mode DRAGMAP aligner. | File |
-| hash_table_cmp | DragmapReference (dragmap_reference_ | Compressed representation of the hash table that is used for the DRAGEN mode DRAGMAP aligner. | File |
+| hash_table_cmp | DragmapReference (dragmap_reference) | Compressed representation of the hash table that is used for the DRAGEN mode DRAGMAP aligner. | File |
 | haplotype_scatter_count | VariantCallingScatterSettings (scatter_settings) | Scatter count used for variant calling. | Int |
 | break_bands_at_multiples_of | VariantCallingScatterSettings (scatter_settings) | Breaks reference bands up at genomic positions that are multiples of this number; used to reduce GVCF file size. | Int |
 | preemptible_tries |  PapiSettings (papi_settings) | Number of times the workflow can be preempted. | Int | 
 | agg_preemptible_tries |  PapiSettings (papi_settings) | Number of preemtible machine tries for the BamtoCram task. | Int |
  
 #### Additional inputs
-Additional inputs that are not contained in a struct are described in the table below. Similar to the struct inputs, these inputs are specified in the [example configuration files](https://github.com/broadinstitute/warp/tree/develop/pipelines/broad/dna_seq/germline/single_sample/wgs/input_files). 
+Additional inputs that are not contained in a struct are described in the table below. Similar to the struct inputs, these inputs are specified in the [example configuration files](https://github.com/broadinstitute/warp/tree/develop/pipelines/broad/dna_seq/germline/single_sample/wgs/input_files) or, when noted, are hardcoded into the WDL workflow.
 
 
 | Input name | Input description | Input type |
@@ -124,19 +124,19 @@ Additional inputs that are not contained in a struct are described in the table 
 | wgs_coverage_interval_list | Interval list for the CollectWgsMetrics tool. | File |
 | provide_bam_output | If set to true, provides the aligned BAM and index as workflow output; default set to false. | Boolean |
 | use_gatk3_haplotype_caller | Uses the GATK3.5 HaplotypeCalller; default set to true. | Boolean |
-| dragen_functional_equivalence_mode | Boolean used to run the WGS pipeline in a mode functionally equivalent to DRAGEN; set to false by default. | Boolean |
-| dragen_maximum_quality_mode | Boolean used to run the pipeline in DRAGEN mode with modifications to produce maximum quality results; set to false by default. | Boolean |
+| dragen_functional_equivalence_mode | Boolean used to run the WGS pipeline in a mode functionally equivalent to DRAGEN; set to false by default. This parameter is mutually exclusive with the `dragen_maxiumum_quality_mode` and will result in an error if both are set to true. | Boolean |
+| dragen_maximum_quality_mode | Boolean used to run the pipeline in DRAGEN mode with modifications to produce maximum quality results; set to false by default. This parameter is mutually exclusive with the `dragen_functional_equivalence_mode` and will result in an error if both are set to true. | Boolean |
 | run_dragen_mode_variant_calling | Boolean used to indicate that DRAGEN mode should be used for variant calling; default set to false but must be true to compose DRAGstr model and perform variant calling with HaplotypeCaller in dragen-mode. | Boolean |
 | use_spanning_event_genotyping | Boolean used to call the HaplotypeCaller --disable-spanning-event-genotyping parameter; default set to true so that variant calling includes spanning events. Set to false to run the DRAGEN pipeline.  | Boolean |
 | unmap_contaminant_reads | Boolean to indicate whether to identify extremely short alignments (with clipping on both sides) as cross-species contamination and unmap the reads; default set to true. This feature is not used in the pipeline mode functionally equivalent to DRAGEN. | Boolean |
 | perform_bqsr | Boolean to turn on base recalibration with BQSR; default set to true, but not necessary when running the pipeline in DRAGEN mode. | Boolean |
 | use_bwa_mem | Boolean indicating if workflow should use the BWA mem aligner; default set to true, but must be set to false to alternatively run the DRAGEN-GATK DRAGMAP aligner. | Boolean | 
 | use_dragen_hard_filtering | Boolean that indicates if workflow should perform hard filtering using the GATK VariantFiltration tool with the --filter-name "DRAGENHardQUAL"; default set to false. | Boolean
-|  read_length | Set to a max of 250 for collecting WGS metrics; specified in the workflow WDL, not in the input JSON. | Int | 
-| lod_threshold | LOD threshold for checking fingerprints; set to -20.0 specified in the workflow WDL, not in the input JSON. | Float | 
-| cross_check_fingerprints_by | Checks fingerprints by READGROUP; specified in the workflow WDL, not in the input JSON. | String |
-| recalibrated_bam_basename | Basename for the recalibrated BAM file; specified to be the base_file_name in the sample_and_unmapped_bams struct + ".aligned.duplicates_marked.recalibrated" in the workflow WDL, not in the input JSON. | String |
-| final_gvcf_base_name | Basename for the final GVCF file; specified in workflow WDL to be the final_gvcf_base_name from the sample_and_unmapped_bams struct, if applicable, or the base_file_name. | String | 
+|  read_length | Set to a max of 250 for collecting WGS metrics; hardcoded in the workflow WDL. | Int | 
+| lod_threshold | LOD threshold for checking fingerprints; hardcoded to -20.0 in workflow WDL. | Float | 
+| cross_check_fingerprints_by | Checks fingerprints by READGROUP; hardcoded in the workflow WDL. | String |
+| recalibrated_bam_basename | Basename for the recalibrated BAM file; hardcoded to be the base_file_name in the sample_and_unmapped_bams struct + ".aligned.duplicates_marked.recalibrated" in the workflow WDL. | String |
+| final_gvcf_base_name | Basename for the final GVCF file; harcoded in workflow WDL to be the final_gvcf_base_name from the sample_and_unmapped_bams struct, if applicable, or the base_file_name. | String | 
  
 ## Workflow tasks and tools
  
@@ -260,19 +260,19 @@ The table below describes the final workflow outputs. If running the workflow on
 | Output variable name | Description | Type |
 | --- | --- | --- |
 | quality_yield_metrics | The quality metrics calculated for the unmapped BAM files. | Array of files |
-| unsorted_read_group_base_distribution_by_cycle_pdf | PDF of the base distribution for each unsorted, readgroup-specific BAM. | Array of PDFs |
+| unsorted_read_group_base_distribution_by_cycle_pdf | PDF of the base distribution for each unsorted, readgroup-specific BAM. | Array of files |
 | unsorted_read_group_base_distribution_by_cycle_metrics | Metrics of the base distribution by cycle for each unsorted, readgroup-specific BAM. | Array of files | 
-| unsorted_read_group_insert_size_histogram_pdf | Histograms of insert size for the unsorted, readgroup-specific BAMs.  | Array of PDFs |
+| unsorted_read_group_insert_size_histogram_pdf | Histograms of insert size for the unsorted, readgroup-specific BAMs.  | Array of files |
 | unsorted_read_group_insert_size_metrics | Insert size metrics for the unsorted, readgroup-specific BAMs. | Array of files |
-| unsorted_read_group_quality_by_cycle_pdf | Quality by cycle PDF for the unsorted, readgroup-specific BAMs. | Array of PDFs |
-| unsorted_read_group_quality_by_cycle_metrics | Quality by cycle metrics for the unsorted, readgroup-specific BAMs.  | Array of Files |
-| unsorted_read_group_quality_distribution_pdf | Quality distribution PDF for the unsorted, readgroup-specific BAMs.  | Array of PDFs |
-| unsorted_read_group_quality_distribution_metrics | Quality distribution metrics for the unsorted, readgroup-specific BAMs. | Array of PDFs |
+| unsorted_read_group_quality_by_cycle_pdf | Quality by cycle PDF for the unsorted, readgroup-specific BAMs. | Array of files |
+| unsorted_read_group_quality_by_cycle_metrics | Quality by cycle metrics for the unsorted, readgroup-specific BAMs.  | Array of files |
+| unsorted_read_group_quality_distribution_pdf | Quality distribution PDF for the unsorted, readgroup-specific BAMs.  | Array of files |
+| unsorted_read_group_quality_distribution_metrics | Quality distribution metrics for the unsorted, readgroup-specific BAMs. | Array of files |
 | read_group_alignment_summary_metrics | Alignment summary metrics for the aggregated BAM. | File |
 | read_group_gc_bias_detail_metrics | GC bias detail metrics for the aggregated BAM. | File |
-| read_group_gc_bias_pd | PDF of the GC bias by readgroup for the aggregated BAM. | PDF |
+| read_group_gc_bias_pdf | PDF of the GC bias by readgroup for the aggregated BAM. | File |
 | read_group_gc_bias_summary_metrics | GC bias summary metrics by readgroup for the aggregated BAM. | File |
-| cross_check_fingerprints_metrics | Fingerprint metrics file If optional fingerprinting is performed. | File |
+| cross_check_fingerprints_metrics | Fingerprint metrics file if optional fingerprinting is performed. | File |
 | selfSM | Contamination estimate from VerifyBamID. | File |
 | contamination | Estimated contamination from the CheckContamination task. | Float |
 | calculate_read_group_checksum_md5 | MD5 checksum for aggregated BAM. | File |
@@ -280,17 +280,17 @@ The table below describes the final workflow outputs. If running the workflow on
 | agg_bait_bias_detail_metrics | Bait bias detail metrics for the aggregated BAM. | File |
 | agg_bait_bias_summary_metrics | Bait bias summary metrics for the aggregated BAM. | File |
 | agg_gc_bias_detail_metric | GC bias detail metrics for the aggregated BAM. | File |
-| agg_gc_bias_pdf | PDF of GC bias for the aggregated BAM. | PDF |
+| agg_gc_bias_pdf | PDF of GC bias for the aggregated BAM. | File |
 | agg_gc_bias_summary_metrics | GC bias summary metrics for the aggregated BAM. | File |
-| agg_insert_size_histogram_pdf | Histogram of insert size for aggregated BAM. | PDF |
+| agg_insert_size_histogram_pdf | Histogram of insert size for aggregated BAM. | File |
 | agg_insert_size_metrics | Insert size metrics for the aggregated BAM. | File |
 | agg_pre_adapter_detail_metrics | Details metrics for artifacts that occur prior to the addition of adaptors for the aggregated BAM. | File |
 | agg_pre_adapter_summary_metrics | Summary metrics for artifacts that occur prior to the addition of adaptors for the aggregated BAM. | File |
-| agg_quality_distribution_pdf | PDF of the quality distribution for the aggregated BAM. | PDF |
+| agg_quality_distribution_pdf | PDF of the quality distribution for the aggregated BAM. | File |
 | agg_quality_distribution_metrics | Quality distribution metrics for the aggregated BAM. | File |
 | agg_error_summary_metrics | Error summary metrics for the aggregated BAM. | File | 
-| fingerprint_summary_metrics | Optional fingerprint summary metrics for the aggregated BAM.. | File |
-| fingerprint_detail_metrics |Optional fingerprint detail metrics for the aggregated BAM. | File |
+| fingerprint_summary_metrics | Optional fingerprint summary metrics for the aggregated BAM. | File |
+| fingerprint_detail_metrics | Optional fingerprint detail metrics for the aggregated BAM. | File |
 | wgs_metrics | Metrics from the CollectWgsMetrics tool. | File |
 | raw_wgs_metric | Metrics from the CollectRawWgsMetrics tool. | File |
 | duplicate_metrics | Duplicate read metrics from the MarkDuplicates tool. | File |
