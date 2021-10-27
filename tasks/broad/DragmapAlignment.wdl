@@ -18,6 +18,55 @@ version 1.0
 import "../../structs/dna_seq/DNASeqStructs.wdl"
 
 # Read unmapped BAM, convert on-the-fly to FASTQ and stream to BWA MEM for alignment, then stream to MergeBamAlignment
+
+task FastqAndDragmap {
+  input {
+    File input_R1
+    File input_R2
+    String output_bam_basename
+    String RGID
+    String sample_name
+
+    DragmapReference dragmap_reference
+
+    Int preemptible_tries
+
+    Float disk_multiplier = 8
+    Int memory_gb = 40
+  }
+
+  Float input_size = size(input_R1, "GiB") + size(input_R2, "GiB")
+  Float dragmap_ref_size = size(dragmap_reference.reference_bin, "GiB") + size(dragmap_reference.hash_table_cfg_bin, "GiB") + size(dragmap_reference.hash_table_cmp, "GiB")
+  Int disk_size = ceil(input_size + dragmap_ref_size + (disk_multiplier * input_size) + 20)
+
+  command <<<
+    set -euxo pipefail
+
+    DRAGMAP_VERSION=$(dragen-os --version)
+
+    if [ -z ${DRAGMAP_VERSION} ]; then
+        exit 1;
+    fi
+
+    mkdir dragen_reference
+    mv ~{dragmap_reference.reference_bin} ~{dragmap_reference.hash_table_cfg_bin} ~{dragmap_reference.hash_table_cmp} dragen_reference
+
+    dragen-os -1 ~{input_R1} -2 ~{input_R2} --RGID ~{RGID} --RGSM ~{sample_name} -r dragen_reference --interleaved=1 2> >(tee ~{output_bam_basename}.dragmap.stderr.log >&2) | samtools view -h -O BAM - > ~{output_bam_basename}.bam
+  >>>
+  runtime {
+    docker: "us.gcr.io/broad-dsde-methods/dragmap:1.2.1"
+    preemptible: preemptible_tries
+    memory: "120 GB"
+    cpu: "32"
+    cpuPlatform: "Intel Sandy Bridge"
+    disks: "local-disk " + disk_size + " HDD"
+  }
+  output {
+    File output_bam = "~{output_bam_basename}.bam"
+    File dragmap_stderr_log = "~{output_bam_basename}.dragmap.stderr.log"
+  }
+}
+
 task SamToFastqAndDragmapAndMba {
   input {
     File input_bam

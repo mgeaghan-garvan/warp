@@ -1,14 +1,19 @@
 {
-  "WholeGenomeReprocessing.input_cram": "gs://cpg-mgrb-main-upload/AAAAA_LP1001101-NTP_C01_ST-E00199_HK7NFCCXX.1.dupmarked.cram",
+  "WholeGenomeFromFastq.input_R1": "gs://pb-dev-312200.appspot.com/NA12878/HT3KCDSXX_3_170811_FD02523283_Homo-sapiens_ATTACTCG-TATAGCCT_R_170811_CNTROL_KAPADNA_M001_R1.fastq.gz",
+  "WholeGenomeFromFastq.input_R2": "gs://pb-dev-312200.appspot.com/NA12878/HT3KCDSXX_3_170811_FD02523283_Homo-sapiens_ATTACTCG-TATAGCCT_R_170811_CNTROL_KAPADNA_M001_R2.fastq.gz",
 
-  "WholeGenomeReprocessing.sample_name": "AAAAA_LP1001101-NTP_C01_ST-E00199_HK7NFCCXX.1",
-  "WholeGenomeReprocessing.base_file_name": "AAAAA_LP1001101-NTP_C01_ST-E00199_HK7NFCCXX.1",
-  "WholeGenomeReprocessing.final_gvcf_base_name": "AAAAA_LP1001101-NTP_C01_ST-E00199_HK7NFCCXX",
-  "WholeGenomeReprocessing.unmapped_bam_suffix": ".unmapped.bam",
-  "WholeGenomeReprocessing.cram_ref_fasta": "gs://gcp-public-data--broad-references/hg38/v0/Homo_sapiens_assembly38.fasta",
-  "WholeGenomeReprocessing.cram_ref_fasta_index": "gs://gcp-public-data--broad-references/hg38/v0/Homo_sapiens_assembly38.fasta.fai",
+  "WholeGenomeFromFastq.RGID": "HT3KCDSXX.3",
+  "WholeGenomeFromFastq.RGPL": "ILLUMINA",
+  "WholeGenomeFromFastq.RGPU": "HT3KCDSXX.3.170811_FD02523283",
+  "WholeGenomeFromFastq.RGLB": "NA12878",
+  "WholeGenomeFromFastq.RGCN": "KCCG",
 
-  "WholeGenomeReprocessing.references": {
+  "WholeGenomeFromFastq.sample_name": "NA12878",
+  "WholeGenomeFromFastq.base_file_name": "NA12878",
+  "WholeGenomeFromFastq.final_gvcf_base_name": "NA12878",
+  "WholeGenomeFromFastq.unmapped_bam_suffix": ".unmapped.bam",
+
+  "WholeGenomeFromFastq.references": {
     "contamination_sites_ud": "gs://gcp-public-data--broad-references/hg38/v0/contamination-resources/1000g/1000g.phase3.100k.b38.vcf.gz.dat.UD",
     "contamination_sites_bed": "gs://gcp-public-data--broad-references/hg38/v0/contamination-resources/1000g/1000g.phase3.100k.b38.vcf.gz.dat.bed",
     "contamination_sites_mu": "gs://gcp-public-data--broad-references/hg38/v0/contamination-resources/1000g/1000g.phase3.100k.b38.vcf.gz.dat.mu",
@@ -38,27 +43,24 @@
     "haplotype_database_file": "gs://gcp-public-data--broad-references/hg38/v0/Homo_sapiens_assembly38.haplotype_database.txt"
   },
 
-  "WholeGenomeReprocessing.WholeGenomeGermlineSingleSample.dragmap_reference": {
+  "WholeGenomeFromFastq.WholeGenomeGermlineSingleSample.dragmap_reference": {
     "reference_bin": "gs://gcp-public-data--broad-references/hg38/v0/dragen_reference/reference.bin",
     "hash_table_cfg_bin": "gs://gcp-public-data--broad-references/hg38/v0/dragen_reference/hash_table.cfg.bin",
     "hash_table_cmp": "gs://gcp-public-data--broad-references/hg38/v0/dragen_reference/hash_table.cmp"
   },
 
-  "WholeGenomeReprocessing.scatter_settings": {
+  "WholeGenomeFromFastq.scatter_settings": {
     "haplotype_scatter_count": 10,
     "break_bands_at_multiples_of": 100000
   },
 
-  "WholeGenomeReprocessing.fingerprint_genotypes_file": "gs://broad-gotc-test-storage/single_sample/plumbing/bams/G96830.NA12878/G96830.NA12878.hg38.reference.fingerprint.vcf.gz",
-  "WholeGenomeReprocessing.fingerprint_genotypes_index": "gs://broad-gotc-test-storage/single_sample/plumbing/bams/G96830.NA12878/G96830.NA12878.hg38.reference.fingerprint.vcf.gz.tbi",
+  "WholeGenomeFromFastq.wgs_coverage_interval_list": "gs://gcp-public-data--broad-references/hg38/v0/wgs_coverage_regions.hg38.interval_list",
+  "WholeGenomeFromFastq.WholeGenomeGermlineSingleSample.UnmappedBamToAlignedBam.CheckContamination.disable_sanity_check": true,
 
-  "WholeGenomeReprocessing.wgs_coverage_interval_list": "gs://gcp-public-data--broad-references/hg38/v0/wgs_coverage_regions.hg38.interval_list",
-  "WholeGenomeReprocessing.WholeGenomeGermlineSingleSample.UnmappedBamToAlignedBam.CheckContamination.disable_sanity_check": true,
-
-  "WholeGenomeReprocessing.papi_settings": {
+  "WholeGenomeFromFastq.papi_settings": {
     "preemptible_tries": 3,
     "agg_preemptible_tries": 3
   },
 
-  "WholeGenomeReprocessing.WholeGenomeGermlineSingleSample.dragen_maximum_quality_mode": true
+  "WholeGenomeFromFastq.WholeGenomeGermlineSingleSample.dragen_maximum_quality_mode": true
 }
