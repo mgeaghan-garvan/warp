@@ -1,14 +1,11 @@
 version: 1.2
 workflows:
-  - name: WholeGenomeGermlineSingleSampleDragen
+  - name: WholeGenomeGermlineMultipleReprocess
     subclass: WDL
-    primaryDescriptorPath: /pipelines/broad/dna_seq/germline/single_sample/wgs/WholeGenomeGermlineSingleSample.wdl
-  - name: WholeGenomeGermlineReprocessDragen
+    primaryDescriptorPath: /pipelines/broad/reprocessing/wgs/WholeGenomeReprocessingMultiple.wdl
+  - name: WholeGenomeGermlineBetterMultipleFastqDragen
     subclass: WDL
-    primaryDescriptorPath: /pipelines/broad/reprocessing/wgs/WholeGenomeReprocessing.wdl
-  - name: WholeGenomeGermlineFastqDragen
+    primaryDescriptorPath: /pipelines/broad/dna_seq/germline/multiple_samples/wgs/WholeGenomeGermlineMultiSamplesFastq.wdl
+  - name: WholeGenomeGermlineFastqToUBamMultipleDragen
     subclass: WDL
-    primaryDescriptorPath: /pipelines/broad/reprocessing/wgs/WholeGenomeFromFastq.wdl
-  - name: WholeGenomeGermlineBetterFastqDragen
-    subclass: WDL
-    primaryDescriptorPath: /pipelines/broad/dna_seq/germline/single_sample/wgs/WholeGenomeGermlineSingleSampleFastq.wdl
+    primaryDescriptorPath: /pipelines/broad/reprocessing/wgs/WholeGenomeFromMultipleFastq.wdl
