@@ -144,7 +144,7 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       chimerism_metrics = AggregatedBamQC.agg_alignment_summary_metrics,
       base_file_name = sample_and_fastqs.base_file_name,
       agg_preemptible_tries = papi_settings.agg_preemptible_tries,
-      qc_Settings = qc_settings
+      continueOnReturnCode = qc_settings.continueOnReturnCode
   }
 
   # QC the sample WGS metrics (stringent thresholds)
@@ -158,7 +158,7 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       wgs_coverage_interval_list = wgs_coverage_interval_list,
       read_length = read_length,
       preemptible_tries = papi_settings.agg_preemptible_tries,
-      qc_settings = qc_settings
+      continueOnReturnCode = qc_settings.continueOnReturnCode
   }
 
   # QC the sample raw WGS metrics (common thresholds)
@@ -172,7 +172,7 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       wgs_coverage_interval_list = wgs_coverage_interval_list,
       read_length = read_length,
       preemptible_tries = papi_settings.agg_preemptible_tries,
-      qc_settings = qc_settings
+      continueOnReturnCode = qc_settings.continueOnReturnCode
   }
 
   call ToGvcf.VariantCalling as BamToGvcf {
@@ -197,7 +197,7 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       agg_preemptible_tries = papi_settings.agg_preemptible_tries,
       use_gatk3_haplotype_caller = use_gatk3_haplotype_caller_,
       use_dragen_hard_filtering = use_dragen_hard_filtering,
-      qc_settings = qc_settings
+      continueOnReturnCode = qc_settings.continueOnReturnCode
   }
 
   if (provide_bam_output) {

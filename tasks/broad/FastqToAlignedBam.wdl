@@ -135,7 +135,7 @@ workflow FastqToAlignedBam {
         lod_threshold = lod_threshold,
         cross_check_by = cross_check_fingerprints_by,
         preemptible_tries = papi_settings.agg_preemptible_tries,
-        qc_settings = qc_settings.continueOnReturnCode
+        continueOnReturnCode = qc_settings.continueOnReturnCode
     }
   }
 
