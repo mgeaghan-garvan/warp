@@ -14,7 +14,7 @@ task CalculateSomaticContamination {
         File contamination_vcf_index
 
         # runtime
-        String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
+        String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
         File? gatk_override
         Int? additional_disk
         Int mem = 3

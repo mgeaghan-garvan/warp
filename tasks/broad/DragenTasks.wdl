@@ -24,7 +24,7 @@ task CalibrateDragstrModel {
     File str_table_file
     File alignment ## can handle cram or bam.
     File alignment_index
-    String docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.2.2.0"
+    String docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.2.2.0"
     Int preemptible_tries = 3
     Int threads = 4
     Int? mem_gb

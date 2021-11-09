@@ -634,7 +634,7 @@ task ValidateVCF {
     File calling_interval_list
     Int preemptible_tries
     Boolean is_gvcf = true
-    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
+    String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
     Boolean continueOnReturnCode
     String zones
   }

@@ -64,7 +64,7 @@ task SortSamSpark {
     String output_bam_basename
     Int preemptible_tries
     Int compression_level
-    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
+    String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
     Int maxRetries = 1
     String zones
   }
@@ -180,7 +180,7 @@ task BaseRecalibrator {
     Int bqsr_scatter
     Int preemptible_tries
     String zones
-    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
+    String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
   }
 
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB") + size(ref_dict, "GiB")
@@ -233,7 +233,7 @@ task ApplyBQSR {
     Int compression_level
     Int bqsr_scatter
     Int preemptible_tries
-    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
+    String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
     Int memory_multiplier = 1
     Int additional_disk = 20
     Boolean bin_base_qualities = true
@@ -293,7 +293,7 @@ task GatherBqsrReports {
     Array[File] input_bqsr_reports
     String output_report_filename
     Int preemptible_tries
-    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
+    String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
     String zones
   }
 

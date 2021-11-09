@@ -98,7 +98,7 @@ task HaplotypeCaller_GATK4_VCF {
     Boolean use_dragen_hard_filtering = false
     Boolean use_spanning_event_genotyping = true
     File? dragstr_model
-    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.2.2.0"
+    String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.2.2.0"
     Int memory_multiplier = 1
     Int maxRetries = 1
     String zones
@@ -211,7 +211,7 @@ task HardFilterVcf {
     String vcf_basename
     File interval_list
     Int preemptible_tries
-    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
+    String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
     Int maxRetries = 1
     String zones
   }
@@ -251,7 +251,7 @@ task DragenHardFilterVcf {
     Boolean make_gvcf
     String vcf_basename
     Int preemptible_tries
-    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.2.2.0"
+    String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.2.2.0"
     Int maxRetries = 1
     String zones
   }
@@ -295,7 +295,7 @@ task CNNScoreVariants {
     File ref_fasta_index
     File ref_dict
     Int preemptible_tries
-    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
+    String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
     String zones
   }
 
@@ -354,7 +354,7 @@ task FilterVariantTranches {
     File dbsnp_resource_vcf_index
     String info_key
     Int preemptible_tries
-    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
+    String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
     String zones
   }
 

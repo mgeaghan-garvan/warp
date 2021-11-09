@@ -235,7 +235,7 @@ task ErrorWithMessage{
   >>>
 
   runtime {
-    docker: australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/ubuntu:20.04"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/ubuntu:20.04"
     zones: zones
   }
 }
