@@ -20,6 +20,7 @@ workflow CramToUnmappedBams {
     String base_file_name
     String unmapped_bam_suffix = ".unmapped.bam"
     Int additional_disk = 20
+    Boolean continueOnReturnCode
   }
 
   if (defined(input_cram)) {
@@ -83,12 +84,13 @@ workflow CramToUnmappedBams {
       input:
         input_bam = SortSam.output_bam,
         report_filename = unmapped_bam_filename + ".validation_report",
-        disk_size = ceil(unmapped_bam_size) + additional_disk
+        disk_size = ceil(unmapped_bam_size) + additional_disk,
+        continueOnReturnCode = continueOnReturnCode
     }
   }
 
   output {
-    Array[File] validation_report = ValidateSamFile.report
+    Array[File?] validation_report = ValidateSamFile.report
     Array[File] unmapped_bams = SortSam.output_bam
   }
   meta {
@@ -102,6 +104,7 @@ task RevertSam {
     String output_bam_filename
     Int disk_size
     Int memory_in_MiB = 3000
+    Int maxRetries = 1
   }
 
   Int java_mem = memory_in_MiB - 1000
@@ -125,6 +128,7 @@ task RevertSam {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     disks: "local-disk " + disk_size + " HDD"
     memory: "~{memory_in_MiB} MiB"
+    maxRetries: maxRetries
     preemptible: 3
   }
 
@@ -143,6 +147,7 @@ task CramToBam {
     String output_basename
     Int disk_size
     Int memory_in_MiB = 7000
+    Int maxRetries = 1
   }
 
   command <<<
@@ -161,6 +166,7 @@ task CramToBam {
     docker: "us.gcr.io/broad-gotc-prod/samtools:1.0.0-1.11-1624651616"
     cpu: 3
     memory: "~{memory_in_MiB} MiB"
+    maxRetries: maxRetries
     disks: "local-disk " + disk_size + " HDD"
     preemptible: 3
   }
@@ -238,6 +244,7 @@ task SplitOutUbamByReadGroup {
     File rg_to_ubam_file
     Int disk_size
     Int memory_in_MiB = 30000
+    Int maxRetries = 1
   }
 
   Array[Array[String]] tmp = read_tsv(rg_to_ubam_file)
@@ -255,6 +262,7 @@ task SplitOutUbamByReadGroup {
     docker: "us.gcr.io/broad-gotc-prod/samtools:1.0.0-1.11-1624651616"
     cpu: 2
     disks: "local-disk " + disk_size + " HDD"
+    maxRetries: maxRetries
     memory: "~{memory_in_MiB} MiB"
     preemptible: 3
   }
@@ -266,11 +274,14 @@ task ValidateSamFile {
     String report_filename
     Int disk_size
     Int memory_in_MiB = 3000
+    Boolean continueOnReturnCode
   }
 
   Int java_mem = memory_in_MiB - 1000
 
   command <<<
+
+    touch ~{report_filename}
 
     java -Xms~{java_mem}m -jar /usr/picard/picard.jar \
       ValidateSamFile \
@@ -285,6 +296,7 @@ task ValidateSamFile {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     disks: "local-disk " + disk_size + " HDD"
     memory: "~{memory_in_MiB} MiB"
+    continueOnReturnCode: continueOnReturnCode
     preemptible: 3
   }
 
@@ -299,6 +311,7 @@ task SortSam {
     String output_bam_filename
     Int memory_in_MiB = 7000
     Float sort_sam_disk_multiplier = 6
+    Int maxRetries = 1
   }
   # SortSam spills to disk a lot more because we are only store 300000 records in RAM now because its faster for our data so it needs
   # more disk space.  Also it spills to disk in an uncompressed format so we need to account for that with a larger multiplier
@@ -320,6 +333,7 @@ task SortSam {
     disks: "local-disk " + disk_size + " HDD"
     memory: "~{memory_in_MiB} MiB"
     preemptible: 3
+    maxRetries: maxRetries
   }
 
   output {

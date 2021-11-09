@@ -21,6 +21,7 @@ task CollectQualityYieldMetrics {
     File input_bam
     String metrics_filename
     Int preemptible_tries
+    Boolean continueOnReturnCode
   }
 
   Int disk_size = ceil(size(input_bam, "GiB")) + 20
@@ -36,6 +37,7 @@ task CollectQualityYieldMetrics {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     disks: "local-disk " + disk_size + " HDD"
     memory: "3.5 GiB"
+    continueOnReturnCode: continueOnReturnCode
     preemptible: preemptible_tries
   }
   output {
@@ -49,6 +51,7 @@ task CollectUnsortedReadgroupBamQualityMetrics {
     File input_bam
     String output_bam_prefix
     Int preemptible_tries
+    Boolean continueOnReturnCode
   }
 
   Int disk_size = ceil(size(input_bam, "GiB")) + 20
@@ -73,6 +76,7 @@ task CollectUnsortedReadgroupBamQualityMetrics {
   runtime {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     memory: "7 GiB"
+    continueOnReturnCode: continueOnReturnCode
     disks: "local-disk " + disk_size + " HDD"
     preemptible: preemptible_tries
   }
@@ -99,6 +103,7 @@ task CollectReadgroupBamQualityMetrics {
     File ref_fasta_index
     Boolean collect_gc_bias_metrics = true
     Int preemptible_tries
+    Boolean continueOnReturnCode
   }
 
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB") + size(ref_dict, "GiB")
@@ -127,6 +132,7 @@ task CollectReadgroupBamQualityMetrics {
     memory: "7 GiB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: preemptible_tries
+    continueOnReturnCode: continueOnReturnCode
   }
   output {
     File alignment_summary_metrics = "~{output_bam_prefix}.alignment_summary_metrics"
@@ -147,6 +153,7 @@ task CollectAggregationMetrics {
     File ref_fasta_index
     Boolean collect_gc_bias_metrics = true
     Int preemptible_tries
+    Boolean continueOnReturnCode
   }
 
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB") + size(ref_dict, "GiB")
@@ -181,6 +188,7 @@ task CollectAggregationMetrics {
     memory: "7 GiB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: preemptible_tries
+    continueOnReturnCode: continueOnReturnCode
   }
   output {
     File alignment_summary_metrics = "~{output_bam_prefix}.alignment_summary_metrics"
@@ -209,6 +217,7 @@ task ConvertSequencingArtifactToOxoG {
     File ref_fasta_index
     Int preemptible_tries
     Int memory_multiplier = 1
+    Boolean continueOnReturnCode
   }
 
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB") + size(ref_dict, "GiB")
@@ -231,6 +240,7 @@ task ConvertSequencingArtifactToOxoG {
     memory: "~{memory_size} GiB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: preemptible_tries
+    continueOnReturnCode: continueOnReturnCode
   }
   output {
     File oxog_metrics = "~{base_name}.oxog_metrics"
@@ -248,6 +258,7 @@ task CrossCheckFingerprints {
     Int preemptible_tries
     Float lod_threshold
     String cross_check_by
+    Boolean continueOnReturnCode
   }
 
   Int disk_size = ceil(total_input_size) + 20
@@ -268,6 +279,7 @@ task CrossCheckFingerprints {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "3.5 GiB"
+    continueOnReturnCode: continueOnReturnCode
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -286,6 +298,7 @@ task CheckFingerprint {
     File? genotypes_index
     String sample
     Int preemptible_tries
+    Boolean continueOnReturnCode
   }
 
   Int disk_size = ceil(size(input_bam, "GiB")) + 20
@@ -312,6 +325,7 @@ task CheckFingerprint {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "3.5 GiB"
+    continueOnReturnCode: continueOnReturnCode
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -382,6 +396,7 @@ task ValidateSamFile {
     Int preemptible_tries
     Int memory_multiplier = 1
     Int additional_disk = 20
+    Boolean continueOnReturnCode
   }
 
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB") + size(ref_dict, "GiB")
@@ -406,6 +421,7 @@ task ValidateSamFile {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "~{memory_size} GiB"
+    continueOnReturnCode: continueOnReturnCode
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -424,6 +440,7 @@ task CollectWgsMetrics {
     File ref_fasta_index
     Int read_length
     Int preemptible_tries
+    Boolean continueOnReturnCode
   }
 
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB")
@@ -445,6 +462,7 @@ task CollectWgsMetrics {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "3 GiB"
+    continueOnReturnCode: continueOnReturnCode
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -465,6 +483,7 @@ task CollectRawWgsMetrics {
     Int preemptible_tries
     Int memory_multiplier = 1
     Int additional_disk = 20
+    Boolean continueOnReturnCode
   }
 
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB")
@@ -489,6 +508,7 @@ task CollectRawWgsMetrics {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "~{memory_size} GiB"
+    continueOnReturnCode: continueOnReturnCode
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -552,6 +572,7 @@ task CalculateReadGroupChecksum {
     File input_bam_index
     String read_group_md5_filename
     Int preemptible_tries
+    Boolean continueOnReturnCode
   }
 
   Int disk_size = ceil(size(input_bam, "GiB")) + 40
@@ -566,6 +587,7 @@ task CalculateReadGroupChecksum {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "4 GiB"
+    continueOnReturnCode: continueOnReturnCode
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -587,6 +609,7 @@ task ValidateVCF {
     Int preemptible_tries
     Boolean is_gvcf = true
     String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.1.8.0"
+    Boolean continueOnReturnCode
   }
 
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB") + size(ref_dict, "GiB")
@@ -608,6 +631,7 @@ task ValidateVCF {
     memory: "7 GiB"
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size + " HDD"
+    continueOnReturnCode: continueOnReturnCode
   }
 }
 
@@ -623,6 +647,7 @@ task CollectVariantCallingMetrics {
     File evaluation_interval_list
     Boolean is_gvcf = true
     Int preemptible_tries
+    Boolean continueOnReturnCode
   }
 
   Int disk_size = ceil(size(input_vcf, "GiB") + size(dbsnp_vcf, "GiB")) + 20
@@ -641,6 +666,7 @@ task CollectVariantCallingMetrics {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "3 GiB"
+    continueOnReturnCode: continueOnReturnCode
     disks: "local-disk " + disk_size + " HDD"
   }
   output {

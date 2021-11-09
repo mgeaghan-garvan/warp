@@ -79,6 +79,7 @@ task ScatterIntervalList {
     File interval_list
     Int scatter_count
     Int break_bands_at_multiples_of
+    Int maxRetries = 1
   }
 
   command <<<
@@ -112,6 +113,7 @@ task ScatterIntervalList {
   runtime {
     docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.5.7-2021-06-09_16-47-48Z"
     memory: "2 GiB"
+    maxRetries: maxRetries
   }
 }
 
@@ -124,6 +126,7 @@ task ConvertToCram {
     File ref_fasta_index
     String output_basename
     Int preemptible_tries
+    Int maxRetries = 1
   }
 
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB")
@@ -149,6 +152,7 @@ task ConvertToCram {
     preemptible: preemptible_tries
     memory: "3 GiB"
     cpu: "1"
+    maxRetries: maxRetries
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -165,6 +169,7 @@ task ConvertToBam {
     File ref_fasta
     File ref_fasta_index
     String output_basename
+    Int maxRetries = 1
   }
 
   command <<<
@@ -180,6 +185,7 @@ task ConvertToBam {
     preemptible: 3
     memory: "3 GiB"
     cpu: "1"
+    maxRetries: maxRetries
     disks: "local-disk 200 HDD"
   }
   output {

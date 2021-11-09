@@ -13,6 +13,10 @@ struct SampleInput {
   String RGCN
 }
 
+struct QCSettings {
+  Boolean continueOnReturnCode
+}
+
 struct SampleAndUnmappedBams {
   String base_file_name
   String? final_gvcf_base_name

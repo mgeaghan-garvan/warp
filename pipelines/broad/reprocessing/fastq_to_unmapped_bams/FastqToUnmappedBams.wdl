@@ -106,6 +106,7 @@ task RevertSam {
     String output_bam_filename
     Int disk_size
     Int memory_in_MiB = 3000
+    Int maxRetries = 1
   }
 
   Int java_mem = memory_in_MiB - 1000
@@ -129,6 +130,7 @@ task RevertSam {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     disks: "local-disk " + disk_size + " HDD"
     memory: "~{memory_in_MiB} MiB"
+    maxRetries: maxRetries
     preemptible: 3
   }
 
@@ -147,6 +149,7 @@ task CramToBam {
     String output_basename
     Int disk_size
     Int memory_in_MiB = 7000
+    Int maxRetries = 1
   }
 
   command <<<
@@ -167,6 +170,7 @@ task CramToBam {
     memory: "~{memory_in_MiB} MiB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: 3
+    maxRetries: maxRetries
   }
 
   output {
@@ -290,6 +294,7 @@ task ValidateSamFile {
     disks: "local-disk " + disk_size + " HDD"
     memory: "~{memory_in_MiB} MiB"
     preemptible: 3
+    continueOnReturnCode: true
   }
 
   output {
@@ -303,6 +308,7 @@ task SortSam {
     String output_bam_filename
     Int memory_in_MiB = 7000
     Float sort_sam_disk_multiplier = 6
+    Int maxRetries = 1
   }
   # SortSam spills to disk a lot more because we are only store 300000 records in RAM now because its faster for our data so it needs
   # more disk space.  Also it spills to disk in an uncompressed format so we need to account for that with a larger multiplier
@@ -324,6 +330,7 @@ task SortSam {
     disks: "local-disk " + disk_size + " HDD"
     memory: "~{memory_in_MiB} MiB"
     preemptible: 3
+    maxRetries: maxRetries
   }
 
   output {

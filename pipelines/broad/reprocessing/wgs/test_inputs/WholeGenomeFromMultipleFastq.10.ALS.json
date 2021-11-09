@@ -51,5 +51,9 @@
     "agg_preemptible_tries": 3
   },
 
+  "WholeGenomeFromMultipleFastq.qc_settings": {
+    "continueOnReturnCode": true
+  },
+
   "WholeGenomeFromMultipleFastq.WholeGenomeFromFastq.WholeGenomeGermlineSingleSample.dragen_maximum_quality_mode": true
 }

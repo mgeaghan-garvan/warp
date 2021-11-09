@@ -49,7 +49,7 @@
   },
 
   "WholeGenomeGermlineSingleSampleFastq.scatter_settings": {
-    "haplotype_scatter_count": 10,
+    "haplotype_scatter_count": 16,
     "break_bands_at_multiples_of": 100000
   },
 
@@ -58,6 +58,10 @@
   "WholeGenomeGermlineSingleSampleFastq.papi_settings": {
     "preemptible_tries": 3,
     "agg_preemptible_tries": 3
+  },
+
+  "WholeGenomeGermlineSingleSampleFastq.qc_settings": {
+    "continueOnReturnCode": true
   },
 
   "WholeGenomeGermlineSingleSampleFastq.dragen_maximum_quality_mode": true

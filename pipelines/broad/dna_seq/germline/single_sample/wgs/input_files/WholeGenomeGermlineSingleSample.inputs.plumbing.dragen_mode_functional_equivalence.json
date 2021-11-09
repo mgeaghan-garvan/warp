@@ -61,5 +61,9 @@
     "agg_preemptible_tries": 3
   },
 
+  "WholeGenomeGermlineSingleSample.qc_settings": {
+    "continueOnReturnCode": true
+  },
+
   "WholeGenomeGermlineSingleSample.dragen_functional_equivalence_mode": true
 }

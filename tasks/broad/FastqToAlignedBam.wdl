@@ -32,6 +32,7 @@ workflow FastqToAlignedBam {
     DNASeqSingleSampleReferences references
     DragmapReference? dragmap_reference
     PapiSettings papi_settings
+    QCSettings qc_settings
 
     File contamination_sites_ud
     File contamination_sites_bed
@@ -133,7 +134,8 @@ workflow FastqToAlignedBam {
         total_input_size = agg_bam_size,
         lod_threshold = lod_threshold,
         cross_check_by = cross_check_fingerprints_by,
-        preemptible_tries = papi_settings.agg_preemptible_tries
+        preemptible_tries = papi_settings.agg_preemptible_tries,
+        qc_settings = qc_settings.continueOnReturnCode
     }
   }
 

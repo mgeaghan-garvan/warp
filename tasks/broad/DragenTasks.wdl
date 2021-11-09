@@ -29,6 +29,7 @@ task CalibrateDragstrModel {
     Int threads = 4
     Int? mem_gb
     Boolean use_ssd = true
+    Int maxRetries = 1
   }
 
   # If CRAM, restrict threads to a maximum of 4
@@ -66,6 +67,7 @@ task CalibrateDragstrModel {
      disks: "local-disk " + disk_size_gb + (if use_ssd then " SSD" else " HDD")
      memory: (java_memory_gb + 1) + " GiB"
      preemptible: preemptible_tries
+     maxRetries: maxRetries
      cpu: java_threads
   }
 

@@ -47,6 +47,7 @@ workflow WholeGenomeGermlineSingleSampleFastq {
     DragmapReference? dragmap_reference
     VariantCallingScatterSettings scatter_settings
     PapiSettings papi_settings
+    QCSettings qc_settings
 
     File? fingerprint_genotypes_file
     File? fingerprint_genotypes_index
@@ -103,6 +104,7 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       references                  = references,
       dragmap_reference           = dragmap_reference,
       papi_settings               = papi_settings,
+      qc_settings                 = qc_settings,
 
       contamination_sites_ud = references.contamination_sites_ud,
       contamination_sites_bed = references.contamination_sites_bed,
@@ -128,7 +130,8 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       references = references,
       fingerprint_genotypes_file = fingerprint_genotypes_file,
       fingerprint_genotypes_index = fingerprint_genotypes_index,
-      papi_settings = papi_settings
+      papi_settings = papi_settings,
+      qc_settings = qc_settings
   }
 
   call ToCram.BamToCram as BamToCram {
@@ -140,7 +143,8 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       duplication_metrics = FastqToAlignedBam.duplicate_metrics,
       chimerism_metrics = AggregatedBamQC.agg_alignment_summary_metrics,
       base_file_name = sample_and_fastqs.base_file_name,
-      agg_preemptible_tries = papi_settings.agg_preemptible_tries
+      agg_preemptible_tries = papi_settings.agg_preemptible_tries,
+      qc_Settings = qc_settings
   }
 
   # QC the sample WGS metrics (stringent thresholds)
@@ -153,7 +157,8 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       ref_fasta_index = references.reference_fasta.ref_fasta_index,
       wgs_coverage_interval_list = wgs_coverage_interval_list,
       read_length = read_length,
-      preemptible_tries = papi_settings.agg_preemptible_tries
+      preemptible_tries = papi_settings.agg_preemptible_tries,
+      qc_settings = qc_settings
   }
 
   # QC the sample raw WGS metrics (common thresholds)
@@ -166,7 +171,8 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       ref_fasta_index = references.reference_fasta.ref_fasta_index,
       wgs_coverage_interval_list = wgs_coverage_interval_list,
       read_length = read_length,
-      preemptible_tries = papi_settings.agg_preemptible_tries
+      preemptible_tries = papi_settings.agg_preemptible_tries,
+      qc_settings = qc_settings
   }
 
   call ToGvcf.VariantCalling as BamToGvcf {
@@ -190,7 +196,8 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       final_vcf_base_name = final_gvcf_base_name,
       agg_preemptible_tries = papi_settings.agg_preemptible_tries,
       use_gatk3_haplotype_caller = use_gatk3_haplotype_caller_,
-      use_dragen_hard_filtering = use_dragen_hard_filtering
+      use_dragen_hard_filtering = use_dragen_hard_filtering,
+      qc_settings = qc_settings
   }
 
   if (provide_bam_output) {
@@ -209,43 +216,43 @@ workflow WholeGenomeGermlineSingleSampleFastq {
 #    Array[File] unsorted_read_group_quality_distribution_pdf = FastqToAlignedBam.unsorted_read_group_quality_distribution_pdf
 #    Array[File] unsorted_read_group_quality_distribution_metrics = FastqToAlignedBam.unsorted_read_group_quality_distribution_metrics
 
-    File read_group_alignment_summary_metrics = AggregatedBamQC.read_group_alignment_summary_metrics
-    File read_group_gc_bias_detail_metrics = AggregatedBamQC.read_group_gc_bias_detail_metrics
-    File read_group_gc_bias_pdf = AggregatedBamQC.read_group_gc_bias_pdf
-    File read_group_gc_bias_summary_metrics = AggregatedBamQC.read_group_gc_bias_summary_metrics
+    File? read_group_alignment_summary_metrics = AggregatedBamQC.read_group_alignment_summary_metrics
+    File? read_group_gc_bias_detail_metrics = AggregatedBamQC.read_group_gc_bias_detail_metrics
+    File? read_group_gc_bias_pdf = AggregatedBamQC.read_group_gc_bias_pdf
+    File? read_group_gc_bias_summary_metrics = AggregatedBamQC.read_group_gc_bias_summary_metrics
 
     File? cross_check_fingerprints_metrics = FastqToAlignedBam.cross_check_fingerprints_metrics
 
     File selfSM = FastqToAlignedBam.selfSM
     Float contamination = FastqToAlignedBam.contamination
 
-    File calculate_read_group_checksum_md5 = AggregatedBamQC.calculate_read_group_checksum_md5
+    File? calculate_read_group_checksum_md5 = AggregatedBamQC.calculate_read_group_checksum_md5
 
-    File agg_alignment_summary_metrics = AggregatedBamQC.agg_alignment_summary_metrics
-    File agg_bait_bias_detail_metrics = AggregatedBamQC.agg_bait_bias_detail_metrics
-    File agg_bait_bias_summary_metrics = AggregatedBamQC.agg_bait_bias_summary_metrics
-    File agg_gc_bias_detail_metrics = AggregatedBamQC.agg_gc_bias_detail_metrics
-    File agg_gc_bias_pdf = AggregatedBamQC.agg_gc_bias_pdf
-    File agg_gc_bias_summary_metrics = AggregatedBamQC.agg_gc_bias_summary_metrics
-    File agg_insert_size_histogram_pdf = AggregatedBamQC.agg_insert_size_histogram_pdf
-    File agg_insert_size_metrics = AggregatedBamQC.agg_insert_size_metrics
-    File agg_pre_adapter_detail_metrics = AggregatedBamQC.agg_pre_adapter_detail_metrics
-    File agg_pre_adapter_summary_metrics = AggregatedBamQC.agg_pre_adapter_summary_metrics
-    File agg_quality_distribution_pdf = AggregatedBamQC.agg_quality_distribution_pdf
-    File agg_quality_distribution_metrics = AggregatedBamQC.agg_quality_distribution_metrics
-    File agg_error_summary_metrics = AggregatedBamQC.agg_error_summary_metrics
+    File? agg_alignment_summary_metrics = AggregatedBamQC.agg_alignment_summary_metrics
+    File? agg_bait_bias_detail_metrics = AggregatedBamQC.agg_bait_bias_detail_metrics
+    File? agg_bait_bias_summary_metrics = AggregatedBamQC.agg_bait_bias_summary_metrics
+    File? agg_gc_bias_detail_metrics = AggregatedBamQC.agg_gc_bias_detail_metrics
+    File? agg_gc_bias_pdf = AggregatedBamQC.agg_gc_bias_pdf
+    File? agg_gc_bias_summary_metrics = AggregatedBamQC.agg_gc_bias_summary_metrics
+    File? agg_insert_size_histogram_pdf = AggregatedBamQC.agg_insert_size_histogram_pdf
+    File? agg_insert_size_metrics = AggregatedBamQC.agg_insert_size_metrics
+    File? agg_pre_adapter_detail_metrics = AggregatedBamQC.agg_pre_adapter_detail_metrics
+    File? agg_pre_adapter_summary_metrics = AggregatedBamQC.agg_pre_adapter_summary_metrics
+    File? agg_quality_distribution_pdf = AggregatedBamQC.agg_quality_distribution_pdf
+    File? agg_quality_distribution_metrics = AggregatedBamQC.agg_quality_distribution_metrics
+    File? agg_error_summary_metrics = AggregatedBamQC.agg_error_summary_metrics
 
     File? fingerprint_summary_metrics = AggregatedBamQC.fingerprint_summary_metrics
     File? fingerprint_detail_metrics = AggregatedBamQC.fingerprint_detail_metrics
 
-    File wgs_metrics = CollectWgsMetrics.metrics
-    File raw_wgs_metrics = CollectRawWgsMetrics.metrics
+    File? wgs_metrics = CollectWgsMetrics.metrics
+    File? raw_wgs_metrics = CollectRawWgsMetrics.metrics
 
     File duplicate_metrics = FastqToAlignedBam.duplicate_metrics
     File? output_bqsr_reports = FastqToAlignedBam.output_bqsr_reports
 
-    File gvcf_summary_metrics = BamToGvcf.vcf_summary_metrics
-    File gvcf_detail_metrics = BamToGvcf.vcf_detail_metrics
+    File? gvcf_summary_metrics = BamToGvcf.vcf_summary_metrics
+    File? gvcf_detail_metrics = BamToGvcf.vcf_detail_metrics
 
     File? output_bam = provided_output_bam
     File? output_bam_index = provided_output_bam_index
@@ -254,7 +261,7 @@ workflow WholeGenomeGermlineSingleSampleFastq {
     File output_cram_index = BamToCram.output_cram_index
     File output_cram_md5 = BamToCram.output_cram_md5
 
-    File validate_cram_file_report = BamToCram.validate_cram_file_report
+    File? validate_cram_file_report = BamToCram.validate_cram_file_report
 
     File output_vcf = BamToGvcf.output_vcf
     File output_vcf_index = BamToGvcf.output_vcf_index

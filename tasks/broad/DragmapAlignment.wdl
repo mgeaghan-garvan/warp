@@ -33,6 +33,7 @@ task FastqAndDragmap {
 
     Float disk_multiplier = 8
     Int memory_gb = 40
+    Int maxRetries = 1
   }
 
   Float input_size = size(input_R1, "GiB") + size(input_R2, "GiB")
@@ -58,6 +59,7 @@ task FastqAndDragmap {
     preemptible: preemptible_tries
     memory: "120 GB"
     cpu: "32"
+    maxRetries: maxRetries
     cpuPlatform: "Intel Sandy Bridge"
     disks: "local-disk " + disk_size + " HDD"
   }
@@ -82,6 +84,7 @@ task SamToFastqAndDragmapAndMba {
 
     Float disk_multiplier = 8
     Int memory_gb = 40
+    Int maxRetries = 1
   }
 
   Float unmapped_bam_size = size(input_bam, "GiB")
@@ -140,6 +143,7 @@ task SamToFastqAndDragmapAndMba {
     preemptible: preemptible_tries
     memory: memory_gb + " GiB"
     cpu: "16"
+    maxRetries: maxRetries
     disks: "local-disk " + disk_size + " HDD"
   }
   output {

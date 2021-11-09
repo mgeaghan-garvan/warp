@@ -22,6 +22,7 @@ task SortSam {
     String output_bam_basename
     Int preemptible_tries
     Int compression_level
+    Int maxRetries = 1
   }
   # SortSam spills to disk a lot more because we are only store 300000 records in RAM now because its faster for our data so it needs
   # more disk space.  Also it spills to disk in an uncompressed format so we need to account for that with a larger multiplier
@@ -44,6 +45,7 @@ task SortSam {
     disks: "local-disk " + disk_size + " HDD"
     cpu: "1"
     memory: "5000 MiB"
+    maxRetries: maxRetries
     preemptible: preemptible_tries
   }
   output {
@@ -61,6 +63,7 @@ task SortSamSpark {
     Int preemptible_tries
     Int compression_level
     String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.1.8.0"
+    Int maxRetries = 1
   }
   # SortSam spills to disk a lot more because we are only store 300000 records in RAM now because its faster for our data so it needs
   # more disk space.  Also it spills to disk in an uncompressed format so we need to account for that with a larger multiplier
@@ -83,6 +86,7 @@ task SortSamSpark {
     disks: "local-disk " + disk_size + " HDD"
     bootDiskSizeGb: "15"
     cpu: "16"
+    maxRetries: maxRetries
     memory: "102 GiB"
     preemptible: preemptible_tries
   }
@@ -110,6 +114,8 @@ task MarkDuplicates {
     Int additional_disk = 20
 
     Float? sorting_collection_size_ratio
+
+    Int maxRetries = 1
   }
 
   # The merged bam will be smaller than the sum of the parts so we need to account for the unmerged inputs and the merged output.
@@ -142,6 +148,7 @@ task MarkDuplicates {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "~{memory_size} GiB"
+    maxRetries: maxRetries
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -305,6 +312,7 @@ task GatherSortedBamFiles {
     Float total_input_size
     Int compression_level
     Int preemptible_tries
+    Int maxRetries = 1
   }
 
   # Multiply the input bam size by two to account for the input and output
@@ -322,6 +330,7 @@ task GatherSortedBamFiles {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "3 GiB"
+    maxRetries: maxRetries
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -340,6 +349,7 @@ task GatherUnsortedBamFiles {
     Float total_input_size
     Int compression_level
     Int preemptible_tries
+    Int maxRetries = 1
   }
 
   # Multiply the input bam size by two to account for the input and output
@@ -357,6 +367,7 @@ task GatherUnsortedBamFiles {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "3 GiB"
+    maxRetries: maxRetries
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -442,6 +453,8 @@ task CheckContamination {
     Int preemptible_tries
     Float contamination_underestimation_factor
     Boolean disable_sanity_check = false
+
+    Int maxRetries = 1
   }
 
   Int disk_size = ceil(size(input_bam, "GiB") + size(ref_fasta, "GiB")) + 30
@@ -490,6 +503,7 @@ task CheckContamination {
     preemptible: preemptible_tries
     memory: "7.5 GiB"
     disks: "local-disk " + disk_size + " HDD"
+    maxRetries: maxRetries
     docker: "us.gcr.io/broad-gotc-prod/verify-bam-id:1.0.0-c1cba76e979904eb69c31520a0d7f5be63c72253-1626442707"
     cpu: 2
   }

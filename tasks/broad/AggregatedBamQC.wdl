@@ -29,6 +29,7 @@ input {
     File haplotype_database_file
     DNASeqSingleSampleReferences references
     PapiSettings papi_settings
+    QCSettings qc_settings
     File? fingerprint_genotypes_file
     File? fingerprint_genotypes_index
   }
@@ -42,7 +43,8 @@ input {
       ref_dict = references.reference_fasta.ref_dict,
       ref_fasta = references.reference_fasta.ref_fasta,
       ref_fasta_index = references.reference_fasta.ref_fasta_index,
-      preemptible_tries = papi_settings.agg_preemptible_tries
+      preemptible_tries = papi_settings.agg_preemptible_tries,
+      continueOnReturnCode = qc_settings.continueOnReturnCode
   }
 
   # QC the final BAM some more (no such thing as too much QC)
@@ -54,7 +56,8 @@ input {
       ref_dict = references.reference_fasta.ref_dict,
       ref_fasta = references.reference_fasta.ref_fasta,
       ref_fasta_index = references.reference_fasta.ref_fasta_index,
-      preemptible_tries = papi_settings.agg_preemptible_tries
+      preemptible_tries = papi_settings.agg_preemptible_tries,
+      continueOnReturnCode = qc_settings.continueOnReturnCode
   }
 
   if (defined(haplotype_database_file) && defined(fingerprint_genotypes_file)) {
@@ -68,7 +71,8 @@ input {
         genotypes_index = fingerprint_genotypes_index,
         output_basename = base_name,
         sample = sample_name,
-        preemptible_tries = papi_settings.agg_preemptible_tries
+        preemptible_tries = papi_settings.agg_preemptible_tries,
+        continueOnReturnCode = qc_settings.continueOnReturnCode
     }
   }
 
@@ -78,7 +82,8 @@ input {
       input_bam = base_recalibrated_bam,
       input_bam_index = base_recalibrated_bam_index,
       read_group_md5_filename = recalibrated_bam_base_name + ".bam.read_group_md5",
-      preemptible_tries = papi_settings.agg_preemptible_tries
+      preemptible_tries = papi_settings.agg_preemptible_tries,
+      continueOnReturnCode = qc_settings.continueOnReturnCode
   }
 
   output {

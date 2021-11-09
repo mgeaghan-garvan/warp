@@ -14,6 +14,7 @@ workflow BamToCram {
     File chimerism_metrics
     String base_file_name
     Int agg_preemptible_tries
+    Boolean continueOnReturnCode
   }
 
 
@@ -54,7 +55,8 @@ workflow BamToCram {
       ignore = ["MISSING_TAG_NM"],
       max_output = 1000000000,
       is_outlier_data = CheckPreValidation.is_outlier_data,
-      preemptible_tries = agg_preemptible_tries
+      preemptible_tries = agg_preemptible_tries,
+      continueOnReturnCode = continueOnReturnCode
   }
 
   output {

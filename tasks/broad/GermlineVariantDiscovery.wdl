@@ -98,6 +98,7 @@ task HaplotypeCaller_GATK4_VCF {
     File? dragstr_model
     String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.2.2.0"
     Int memory_multiplier = 1
+    Int maxRetries = 1
   }
   
   Int memory_size_gb = ceil(8 * memory_multiplier)
@@ -152,6 +153,7 @@ task HaplotypeCaller_GATK4_VCF {
     preemptible: preemptible_tries
     memory: "~{memory_size_gb} GiB"
     cpu: "2"
+    maxRetries: maxRetries
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size + " HDD"
   }
@@ -170,6 +172,7 @@ task MergeVCFs {
     Array[File] input_vcfs_indexes
     String output_vcf_name
     Int preemptible_tries
+    Int maxRetries = 1
   }
 
   Int disk_size = ceil(size(input_vcfs, "GiB") * 2.5) + 10
@@ -186,6 +189,7 @@ task MergeVCFs {
     docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "3 GiB"
+    maxRetries: maxRetries
     disks: "local-disk ~{disk_size} HDD"
   }
   output {
@@ -202,6 +206,7 @@ task HardFilterVcf {
     File interval_list
     Int preemptible_tries
     String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.1.8.0"
+    Int maxRetries = 1
   }
 
   Int disk_size = ceil(2 * size(input_vcf, "GiB")) + 20
@@ -224,6 +229,7 @@ task HardFilterVcf {
     docker: gatk_docker
     preemptible: preemptible_tries
     memory: "3 GiB"
+    maxRetries: maxRetries
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size + " HDD"
   }
@@ -238,6 +244,7 @@ task DragenHardFilterVcf {
     String vcf_basename
     Int preemptible_tries
     String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.2.2.0"
+    Int maxRetries = 1
   }
 
   Int disk_size = ceil(2 * size(input_vcf, "GiB")) + 20
@@ -261,6 +268,7 @@ task DragenHardFilterVcf {
     docker: gatk_docker
     preemptible: preemptible_tries
     memory: "3 GiB"
+    maxRetries: maxRetries
     bootDiskSizeGb: 15
     disks: "local-disk " + disk_size + " HDD"
   }

@@ -29,6 +29,7 @@ workflow VariantCalling {
     String base_file_name
     String final_vcf_base_name
     Int agg_preemptible_tries
+    Boolean continueOnReturnCode
     Boolean make_gvcf = true
     Boolean make_bamout = false
     Boolean use_gatk3_haplotype_caller = false
@@ -167,7 +168,8 @@ workflow VariantCalling {
       ref_dict = ref_dict,
       calling_interval_list = calling_interval_list,
       is_gvcf = make_gvcf,
-      preemptible_tries = agg_preemptible_tries
+      preemptible_tries = agg_preemptible_tries,
+      continueOnReturnCode = continueOnReturnCode
   }
 
   # QC the (g)VCF
@@ -181,12 +183,13 @@ workflow VariantCalling {
       ref_dict = ref_dict,
       evaluation_interval_list = evaluation_interval_list,
       is_gvcf = make_gvcf,
-      preemptible_tries = agg_preemptible_tries
+      preemptible_tries = agg_preemptible_tries,
+      continueOnReturnCode = continueOnReturnCode
   }
 
   output {
-    File vcf_summary_metrics = CollectVariantCallingMetrics.summary_metrics
-    File vcf_detail_metrics = CollectVariantCallingMetrics.detail_metrics
+    File? vcf_summary_metrics = CollectVariantCallingMetrics.summary_metrics
+    File? vcf_detail_metrics = CollectVariantCallingMetrics.detail_metrics
     File output_vcf = MergeVCFs.output_vcf
     File output_vcf_index = MergeVCFs.output_vcf_index
     File? bamout = MergeBamouts.output_bam
