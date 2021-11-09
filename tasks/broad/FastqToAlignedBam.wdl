@@ -34,6 +34,8 @@ workflow FastqToAlignedBam {
     PapiSettings papi_settings
     QCSettings qc_settings
 
+    String zones
+
     File contamination_sites_ud
     File contamination_sites_bed
     File contamination_sites_mu
@@ -66,7 +68,8 @@ workflow FastqToAlignedBam {
         compression_level = compression_level,
         preemptible_tries = papi_settings.preemptible_tries,
         hard_clip_reads = hard_clip_reads,
-        unmap_contaminant_reads = unmap_contaminant_reads
+        unmap_contaminant_reads = unmap_contaminant_reads,
+        zones = zones
     }
   }
   if (!use_bwa_mem) {
@@ -78,7 +81,8 @@ workflow FastqToAlignedBam {
         sample_name = sample_and_fastqs.sample_name,
         output_bam_basename = sample_and_fastqs.base_file_name + ".aligned.unsorted",
         dragmap_reference = select_first([dragmap_reference]),
-        preemptible_tries = papi_settings.preemptible_tries
+        preemptible_tries = papi_settings.preemptible_tries,
+        zones = zones
     }
   }
 # File output_aligned_bam = select_first([SamToFastqAndBwaMemAndMba.output_bam, SamToFastqAndDragmapAndMba.output_bam, SplitRG.aligned_bam])
@@ -109,7 +113,8 @@ workflow FastqToAlignedBam {
       metrics_filename = sample_and_fastqs.base_file_name + ".duplicate_metrics",
       total_input_size = mapped_bam_size,
       compression_level = compression_level,
-      preemptible_tries = if data_too_large_for_preemptibles then 0 else papi_settings.agg_preemptible_tries
+      preemptible_tries = if data_too_large_for_preemptibles then 0 else papi_settings.agg_preemptible_tries,
+      zones = zones
   }
 
   # Sort aggregated+deduped BAM file and fix tags
@@ -118,7 +123,8 @@ workflow FastqToAlignedBam {
       input_bam = MarkDuplicates.output_bam,
       output_bam_basename = sample_and_fastqs.base_file_name + ".aligned.duplicate_marked.sorted",
       compression_level = compression_level,
-      preemptible_tries = if data_too_large_for_preemptibles then 0 else papi_settings.agg_preemptible_tries
+      preemptible_tries = if data_too_large_for_preemptibles then 0 else papi_settings.agg_preemptible_tries,
+      zones = zones
   }
 
   Float agg_bam_size = size(SortSampleBam.output_bam, "GiB")
@@ -135,7 +141,8 @@ workflow FastqToAlignedBam {
         lod_threshold = lod_threshold,
         cross_check_by = cross_check_fingerprints_by,
         preemptible_tries = papi_settings.agg_preemptible_tries,
-        continueOnReturnCode = qc_settings.continueOnReturnCode
+        continueOnReturnCode = qc_settings.continueOnReturnCode,
+        zones = zones
     }
   }
 
@@ -143,7 +150,8 @@ workflow FastqToAlignedBam {
   call Utils.CreateSequenceGroupingTSV as CreateSequenceGroupingTSV {
     input:
       ref_dict = references.reference_fasta.ref_dict,
-      preemptible_tries = papi_settings.preemptible_tries
+      preemptible_tries = papi_settings.preemptible_tries,
+      zones = zones
   }
 
   # Estimate level of cross-sample contamination
@@ -158,7 +166,8 @@ workflow FastqToAlignedBam {
       ref_fasta_index = references.reference_fasta.ref_fasta_index,
       output_prefix = sample_and_fastqs.base_file_name + ".preBqsr",
       preemptible_tries = papi_settings.agg_preemptible_tries,
-      contamination_underestimation_factor = 0.75
+      contamination_underestimation_factor = 0.75,
+      zones = zones
   }
 
   # We need disk to localize the sharded input and output due to the scatter for BQSR.
@@ -187,7 +196,8 @@ workflow FastqToAlignedBam {
           ref_fasta = references.reference_fasta.ref_fasta,
           ref_fasta_index = references.reference_fasta.ref_fasta_index,
           bqsr_scatter = bqsr_divisor,
-          preemptible_tries = papi_settings.agg_preemptible_tries
+          preemptible_tries = papi_settings.agg_preemptible_tries,
+          zones = zones
       }
     }
 
@@ -197,7 +207,8 @@ workflow FastqToAlignedBam {
       input:
         input_bqsr_reports = BaseRecalibrator.recalibration_report,
         output_report_filename = sample_and_fastqs.base_file_name + ".recal_data.csv",
-        preemptible_tries = papi_settings.preemptible_tries
+        preemptible_tries = papi_settings.preemptible_tries,
+        zones = zones
     }
 
     scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) {
@@ -216,7 +227,8 @@ workflow FastqToAlignedBam {
           compression_level = compression_level,
           preemptible_tries = papi_settings.agg_preemptible_tries,
           bin_base_qualities = bin_base_qualities,
-          somatic = somatic
+          somatic = somatic,
+          zones = zones
       }
     }
   }
@@ -228,7 +240,8 @@ workflow FastqToAlignedBam {
       output_bam_basename = sample_and_fastqs.base_file_name,
       total_input_size = agg_bam_size,
       compression_level = compression_level,
-      preemptible_tries = papi_settings.agg_preemptible_tries
+      preemptible_tries = papi_settings.agg_preemptible_tries,
+      zones = zones
   }
 
   # Outputs that will be retained when execution is complete

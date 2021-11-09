@@ -20,6 +20,7 @@ task CreateSequenceGroupingTSV {
   input {
     File ref_dict
     Int preemptible_tries
+    String zones
   }
   # Use python to create the Sequencing Groupings used for BQSR and PrintReads Scatter.
   # It outputs to stdout where it is parsed into a wdl Array[Array[String]]
@@ -62,8 +63,9 @@ task CreateSequenceGroupingTSV {
   >>>
   runtime {
     preemptible: preemptible_tries
-    docker: "us.gcr.io/broad-gotc-prod/python:2.7"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/python:2.7"
     memory: "2 GiB"
+    zones: zones
   }
   output {
     Array[Array[String]] sequence_grouping = read_tsv("sequence_grouping.txt")
@@ -80,6 +82,7 @@ task ScatterIntervalList {
     Int scatter_count
     Int break_bands_at_multiples_of
     Int maxRetries = 1
+    String zones
   }
 
   command <<<
@@ -111,9 +114,10 @@ task ScatterIntervalList {
     Int interval_count = read_int(stdout())
   }
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.5.7-2021-06-09_16-47-48Z"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/genomes-in-the-cloud:2.5.7-2021-06-09_16-47-48Z"
     memory: "2 GiB"
     maxRetries: maxRetries
+    zones: zones
   }
 }
 
@@ -127,6 +131,7 @@ task ConvertToCram {
     String output_basename
     Int preemptible_tries
     Int maxRetries = 1
+    String zones
   }
 
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB")
@@ -148,11 +153,12 @@ task ConvertToCram {
     samtools index ~{output_basename}.cram
   >>>
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/samtools:1.0.0-1.11-1624651616"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/samtools:1.0.0-1.11-1624651616"
     preemptible: preemptible_tries
     memory: "3 GiB"
     cpu: "1"
     maxRetries: maxRetries
+    zones: zones
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -170,6 +176,7 @@ task ConvertToBam {
     File ref_fasta_index
     String output_basename
     Int maxRetries = 1
+    String zones
   }
 
   command <<<
@@ -181,11 +188,12 @@ task ConvertToBam {
     samtools index ~{output_basename}.bam
   >>>
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/samtools:1.0.0-1.11-1624651616"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/samtools:1.0.0-1.11-1624651616"
     preemptible: 3
     memory: "3 GiB"
     cpu: "1"
     maxRetries: maxRetries
+    zones: zones
     disks: "local-disk 200 HDD"
   }
   output {
@@ -199,6 +207,7 @@ task SumFloats {
   input {
     Array[Float] sizes
     Int preemptible_tries
+    String zones
   }
 
   command <<<
@@ -208,8 +217,9 @@ task SumFloats {
     Float total_size = read_float(stdout())
   }
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/python:2.7"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/python:2.7"
     preemptible: preemptible_tries
+    zones: zones
   }
 }
 
@@ -217,6 +227,7 @@ task SumFloats {
 task ErrorWithMessage{
   input {
     String message
+    String zones
   }
   command <<<
     >&2 echo "Error: ~{message}"
@@ -224,6 +235,7 @@ task ErrorWithMessage{
   >>>
 
   runtime {
-    docker: "ubuntu:20.04"
+    docker: australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/ubuntu:20.04"
+    zones: zones
   }
 }

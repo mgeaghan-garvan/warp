@@ -24,12 +24,13 @@ task CalibrateDragstrModel {
     File str_table_file
     File alignment ## can handle cram or bam.
     File alignment_index
-    String docker = "us.gcr.io/broad-gatk/gatk:4.2.2.0"
+    String docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.2.2.0"
     Int preemptible_tries = 3
     Int threads = 4
     Int? mem_gb
     Boolean use_ssd = true
     Int maxRetries = 1
+    String zones
   }
 
   # If CRAM, restrict threads to a maximum of 4
@@ -68,6 +69,7 @@ task CalibrateDragstrModel {
      memory: (java_memory_gb + 1) + " GiB"
      preemptible: preemptible_tries
      maxRetries: maxRetries
+     zones: zones
      cpu: java_threads
   }
 

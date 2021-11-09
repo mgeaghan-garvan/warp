@@ -1,5 +1,6 @@
 {
   "WholeGenomeReprocessing.input_cram": "gs://cpg-mgrb-main-upload/AAAAA_LP1001101-NTP_C01_ST-E00199_HK7NFCCXX.1.dupmarked.cram",
+  "WholeGenomeReprocessing.zones": "australia-southeast1-a",
 
   "WholeGenomeReprocessing.sample_name": "AAAAA_LP1001101-NTP_C01_ST-E00199_HK7NFCCXX.1",
   "WholeGenomeReprocessing.base_file_name": "AAAAA_LP1001101-NTP_C01_ST-E00199_HK7NFCCXX.1",

@@ -27,7 +27,7 @@ task GenerateEmptyVariantCallingMetricsFile {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-arrays-prod/arrays-picard-private:4.1.0-1631191359"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/arrays-picard-private:4.1.0-1631191359"
     memory: "3.5 GiB"
     preemptible: preemptible_tries
   }
@@ -73,7 +73,7 @@ task BlacklistBarcode {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-arrays-prod/arrays-picard-private:4.1.0-1631191359"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/arrays-picard-private:4.1.0-1631191359"
     memory: "3.5 GiB"
     preemptible: preemptible_tries
   }
@@ -124,7 +124,7 @@ task VcfToMercuryFingerprintJson {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-arrays-prod/arrays-picard-private:4.1.0-1631191359"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/arrays-picard-private:4.1.0-1631191359"
     disks: "local-disk " + disk_size + " HDD"
     memory: "3.5 GiB"
     preemptible: preemptible_tries
@@ -152,7 +152,7 @@ task CreateBafRegressMetricsFile {
       --OUTPUT ~{output_metrics_basefilename}
   }
   runtime {
-    docker: "us.gcr.io/broad-arrays-prod/arrays-picard-private:4.1.0-1631191359"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/arrays-picard-private:4.1.0-1631191359"
     disks: "local-disk " + disk_size + " HDD"
     memory: "3.5 GiB"
     preemptible: preemptible_tries
@@ -229,7 +229,7 @@ task UploadArraysMetrics {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-arrays-prod/arrays-picard-private:4.1.0-1631191359"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/arrays-picard-private:4.1.0-1631191359"
     disks: "local-disk " + disk_size + " HDD"
     memory: "3.5 GiB"
     preemptible: preemptible_tries
@@ -278,7 +278,7 @@ task UploadEmptyArraysMetrics {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-arrays-prod/arrays-picard-private:4.0.10-1631039849"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/arrays-picard-private:4.0.10-1631039849"
     disks: "local-disk " + disk_size + " HDD"
     memory: "3.5 GiB"
     preemptible: preemptible_tries
@@ -335,7 +335,7 @@ task CreateChipWellBarcodeParamsFile {
   >>>
 
   runtime {
-    docker: "gcr.io/gcp-runtimes/ubuntu_16_0_4:latest"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/ubuntu_16_0_4:latest"
     disks: "local-disk 10 HDD"
     memory: "2 GiB"
     preemptible: preemptible_tries
@@ -377,7 +377,7 @@ task UpdateChipWellBarcodeIndex {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-arrays-prod/arrays-picard-private:4.1.0-1631191359"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/arrays-picard-private:4.1.0-1631191359"
     disks: "local-disk " + disk_size + " HDD"
     memory: "3.5 GiB"
     preemptible: preemptible_tries
@@ -413,7 +413,7 @@ task GetNextArraysQcAnalysisVersionNumber {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-arrays-prod/arrays-picard-private:4.1.0-1631191359"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/arrays-picard-private:4.1.0-1631191359"
     memory: "3.5 GiB"
     preemptible: preemptible_tries
   }
@@ -445,7 +445,7 @@ task ResolveExtendedIlluminaManifestFile {
   >>>
 
   runtime {
-    docker: "gcr.io/gcp-runtimes/ubuntu_16_0_4:latest"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/ubuntu_16_0_4:latest"
     disks: "local-disk 10 HDD"
     memory: "2 GiB"
     preemptible: preemptible_tries
@@ -480,7 +480,7 @@ task ResolveMinorAlleleFrequencyFile {
   >>>
 
   runtime {
-    docker: "gcr.io/gcp-runtimes/ubuntu_16_0_4:latest"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/ubuntu_16_0_4:latest"
     disks: "local-disk 10 HDD"
     memory: "2 GiB"
     preemptible: preemptible_tries

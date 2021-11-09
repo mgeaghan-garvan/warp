@@ -13,6 +13,8 @@
   "WholeGenomeFromFastq.final_gvcf_base_name": "NA12878",
   "WholeGenomeFromFastq.unmapped_bam_suffix": ".unmapped.bam",
 
+  "WholeGenomeFromFastq.zones": "australia-southeast1-a",
+
   "WholeGenomeFromFastq.references": {
     "contamination_sites_ud": "gs://gcp-public-data--broad-references/hg38/v0/contamination-resources/1000g/1000g.phase3.100k.b38.vcf.gz.dat.UD",
     "contamination_sites_bed": "gs://gcp-public-data--broad-references/hg38/v0/contamination-resources/1000g/1000g.phase3.100k.b38.vcf.gz.dat.bed",

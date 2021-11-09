@@ -54,6 +54,7 @@
   },
 
   "WholeGenomeGermlineSingleSampleFastq.wgs_coverage_interval_list": "gs://gcp-public-data--broad-references/hg38/v0/wgs_coverage_regions.hg38.interval_list",
+  "WholeGenomeGermlineSingleSampleFastq.zones": "australia-southeast1-a",
 
   "WholeGenomeGermlineSingleSampleFastq.papi_settings": {
     "preemptible_tries": 3,

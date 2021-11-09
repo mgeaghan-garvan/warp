@@ -17,6 +17,7 @@ workflow WholeGenomeReprocessing {
     String base_file_name
     String final_gvcf_base_name
     String unmapped_bam_suffix
+    String zones
 
     File? cram_ref_fasta
     File? cram_ref_fasta_index
@@ -40,7 +41,8 @@ workflow WholeGenomeReprocessing {
       ref_fasta_index = select_first([cram_ref_fasta_index, references.reference_fasta.ref_fasta_index]),
       base_file_name = base_file_name,
       output_map = output_map,
-      continueOnReturnCode = qc_settings.continueOnReturnCode
+      continueOnReturnCode = qc_settings.continueOnReturnCode,
+      zones = zones
   }
 
   SampleAndUnmappedBams sample_and_unmapped_bams = object {
@@ -60,7 +62,8 @@ workflow WholeGenomeReprocessing {
       fingerprint_genotypes_index = fingerprint_genotypes_index,
       papi_settings = papi_settings,
       wgs_coverage_interval_list = wgs_coverage_interval_list,
-      qc_settings = qc_settings
+      qc_settings = qc_settings,
+      zones = zones
   }
 
   output {

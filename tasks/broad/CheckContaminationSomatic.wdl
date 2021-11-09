@@ -14,12 +14,13 @@ task CalculateSomaticContamination {
         File contamination_vcf_index
 
         # runtime
-        String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.1.8.0"
+        String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
         File? gatk_override
         Int? additional_disk
         Int mem = 3
         Int? preemptible_attempts
         Int? max_retries
+        String zones
     }
 
     Int disk_size = ceil(size(tumor_cram_or_bam,"GB") + size(normal_cram_or_bam,"GB")) + select_first([additional_disk, 10])
@@ -72,6 +73,7 @@ task CalculateSomaticContamination {
         bootDiskSizeGb: 12
         memory: command_mem + " MB"
         maxRetries: select_first([max_retries, 2])
+        zones: zones
         disks: "local-disk " + disk_size + " HDD"
         preemptible: select_first([preemptible_attempts, 3])
     }

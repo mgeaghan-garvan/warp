@@ -19,6 +19,7 @@ workflow WholeGenomeFromFastq {
     String RGLB
     String RGPU
     String RGCN
+    String zones
 
     String sample_name
     String base_file_name
@@ -43,7 +44,8 @@ workflow WholeGenomeFromFastq {
       RGPU = RGPU,
       RGLB = RGLB,
       sample_name = sample_name,
-      RGCN = RGCN
+      RGCN = RGCN,
+      zones = zones
   }
 
   SampleAndUnmappedBams sample_and_unmapped_bams = object {
@@ -61,7 +63,8 @@ workflow WholeGenomeFromFastq {
       scatter_settings = scatter_settings,
       papi_settings = papi_settings,
       qc_settings = qc_settings,
-      wgs_coverage_interval_list = wgs_coverage_interval_list
+      wgs_coverage_interval_list = wgs_coverage_interval_list,
+      zones = zones
   }
 
   output {

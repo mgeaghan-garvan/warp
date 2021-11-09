@@ -23,6 +23,7 @@ task CopyFilesFromCloudToCloud {
     String google_account_vault_path
     Float? contamination
     String base_file_name
+    String zones
   }
 
   command {
@@ -65,8 +66,9 @@ task CopyFilesFromCloudToCloud {
     memory: "2 GiB"
     cpu: "1"
     disks: "local-disk 20 HDD"
-    docker: "us.gcr.io/broad-gotc-prod/dsde-toolbox:dev"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/dsde-toolbox:dev"
     preemptible: 3
+    zones: zones
     noAddress: false
   }
 }

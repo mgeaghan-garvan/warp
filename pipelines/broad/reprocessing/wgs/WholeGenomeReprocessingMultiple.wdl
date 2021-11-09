@@ -19,6 +19,7 @@ workflow WholeGenomeReprocessingMultiple {
     File? fingerprint_genotypes_index
 
     File wgs_coverage_interval_list
+    String zones
   }
 
   Array[Array[String]] sample_map_lines = read_tsv(sample_map)
@@ -45,7 +46,8 @@ workflow WholeGenomeReprocessingMultiple {
         qc_settings = qc_settings,
         fingerprint_genotypes_file = fingerprint_genotypes_file,
         fingerprint_genotypes_index = fingerprint_genotypes_index,
-        wgs_coverage_interval_list = wgs_coverage_interval_list
+        wgs_coverage_interval_list = wgs_coverage_interval_list,
+        zones = zones
     }
 
   }

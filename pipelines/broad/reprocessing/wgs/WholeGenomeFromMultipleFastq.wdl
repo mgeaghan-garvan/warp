@@ -16,6 +16,8 @@ workflow WholeGenomeFromMultipleFastq {
     QCSettings qc_settings
 
     File wgs_coverage_interval_list
+
+    String zones
   }
 
   Array[Array[String]] sample_map_lines = read_tsv(sample_map)
@@ -50,7 +52,8 @@ workflow WholeGenomeFromMultipleFastq {
         papi_settings = papi_settings,
         qc_settings = qc_settings,
 
-        wgs_coverage_interval_list = wgs_coverage_interval_list
+        wgs_coverage_interval_list = wgs_coverage_interval_list,
+        zones = zones
     }
   }
 

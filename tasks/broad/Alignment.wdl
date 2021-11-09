@@ -33,6 +33,7 @@ task FastqAndBwaMemAndMba {
     Int preemptible_tries
     Boolean hard_clip_reads = false
     Boolean unmap_contaminant_reads = true
+    String zones
   }
 
   Float unmapped_bam_size = size(input_R1 , "GiB") + size(input_R2 , "GiB")
@@ -75,10 +76,11 @@ task FastqAndBwaMemAndMba {
     fi
   >>>
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/samtools-picard-bwa:1.0.0-0.7.15-2.23.8-1626449438"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/samtools-picard-bwa:1.0.0-0.7.15-2.23.8-1626449438"
     preemptible: preemptible_tries
     memory: "14 GiB"
     cpu: "16"
+    zones: zones
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -104,6 +106,7 @@ task SamToFastqAndBwaMemAndMba {
     Int preemptible_tries
     Boolean hard_clip_reads = false
     Boolean unmap_contaminant_reads = true
+    String zones
   }
 
   Float unmapped_bam_size = size(input_bam, "GiB")
@@ -180,10 +183,11 @@ task SamToFastqAndBwaMemAndMba {
     fi
   >>>
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/samtools-picard-bwa:1.0.0-0.7.15-2.23.8-1626449438"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/samtools-picard-bwa:1.0.0-0.7.15-2.23.8-1626449438"
     preemptible: preemptible_tries
     memory: "14 GiB"
     cpu: "16"
+    zones: zones
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -198,6 +202,7 @@ task SamSplitter {
     Int n_reads
     Int preemptible_tries
     Int compression_level
+    String zones
   }
 
   Float unmapped_bam_size = size(input_bam, "GiB")
@@ -221,9 +226,10 @@ task SamSplitter {
     Array[File] split_bams = glob("output_dir/*.bam")
   }
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/samtools-picard-bwa:1.0.0-0.7.15-2.23.8-1626449438"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/samtools-picard-bwa:1.0.0-0.7.15-2.23.8-1626449438"
     preemptible: preemptible_tries
     memory: "3.75 GiB"
+    zones: zones
     disks: "local-disk " + disk_size + " HDD"
   }
 }

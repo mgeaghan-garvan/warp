@@ -27,6 +27,7 @@ workflow VariantCalling {
     File dbsnp_vcf
     File dbsnp_vcf_index
     String base_file_name
+    String zones
     String final_vcf_base_name
     Int agg_preemptible_tries
     Boolean continueOnReturnCode
@@ -49,7 +50,8 @@ workflow VariantCalling {
          ref_dict = ref_dict,
          alignment = input_bam,
          alignment_index = input_bam_index,
-         str_table_file = select_first([ref_str])
+         str_table_file = select_first([ref_str]),
+         zones = zones
     }
   }
 
@@ -60,7 +62,8 @@ workflow VariantCalling {
     input:
       interval_list = calling_interval_list,
       scatter_count = haplotype_scatter_count,
-      break_bands_at_multiples_of = break_bands_at_multiples_of
+      break_bands_at_multiples_of = break_bands_at_multiples_of,
+      zones = zones
   }
 
   # We need disk to localize the sharded input and output due to the scatter for HaplotypeCaller.
@@ -84,7 +87,8 @@ workflow VariantCalling {
           ref_fasta_index = ref_fasta_index,
           contamination = contamination,
           preemptible_tries = agg_preemptible_tries,
-          hc_scatter = hc_divisor
+          hc_scatter = hc_divisor,
+          zones = zones
       }
     }
 
@@ -107,7 +111,8 @@ workflow VariantCalling {
           use_dragen_hard_filtering = use_dragen_hard_filtering,
           use_spanning_event_genotyping = use_spanning_event_genotyping,
           dragstr_model = DragstrAutoCalibration.dragstr_model,
-          preemptible_tries = agg_preemptible_tries
+          preemptible_tries = agg_preemptible_tries,
+          zones = zones
        }
       
       if (use_dragen_hard_filtering) {
@@ -117,7 +122,8 @@ workflow VariantCalling {
             input_vcf_index = HaplotypeCallerGATK4.output_vcf_index,
             make_gvcf = make_gvcf,
             vcf_basename = base_file_name,
-            preemptible_tries = agg_preemptible_tries
+            preemptible_tries = agg_preemptible_tries,
+            zones = zones
         }
       }
 
@@ -128,7 +134,8 @@ workflow VariantCalling {
             input_bam = HaplotypeCallerGATK4.bamout,
             output_bam_basename = final_vcf_base_name,
             preemptible_tries = agg_preemptible_tries,
-            compression_level = 2
+            compression_level = 2,
+            zones = zones
         }
       }
     }
@@ -145,14 +152,16 @@ workflow VariantCalling {
       input_vcfs = vcfs_to_merge,
       input_vcfs_indexes = vcf_indices_to_merge,
       output_vcf_name = final_vcf_base_name + hard_filter_suffix + merge_suffix,
-      preemptible_tries = agg_preemptible_tries
+      preemptible_tries = agg_preemptible_tries,
+      zones = zones
   }
 
   if (make_bamout) {
     call MergeBamouts {
       input:
         bams = select_all(SortBamout.output_bam),
-        output_base_name = final_vcf_base_name
+        output_base_name = final_vcf_base_name,
+        zones = zones
     }
   }
 
@@ -169,7 +178,8 @@ workflow VariantCalling {
       calling_interval_list = calling_interval_list,
       is_gvcf = make_gvcf,
       preemptible_tries = agg_preemptible_tries,
-      continueOnReturnCode = continueOnReturnCode
+      continueOnReturnCode = continueOnReturnCode,
+      zones = zones
   }
 
   # QC the (g)VCF
@@ -184,7 +194,8 @@ workflow VariantCalling {
       evaluation_interval_list = evaluation_interval_list,
       is_gvcf = make_gvcf,
       preemptible_tries = agg_preemptible_tries,
-      continueOnReturnCode = continueOnReturnCode
+      continueOnReturnCode = continueOnReturnCode,
+      zones = zones
   }
 
   output {
@@ -206,6 +217,7 @@ task MergeBamouts {
   input {
     Array[File] bams
     String output_base_name
+    String zones
   }
 
   Int disk_size = ceil(size(bams, "GiB") * 2) + 10
@@ -222,8 +234,9 @@ task MergeBamouts {
   }
 
   runtime {
-    docker: "biocontainers/samtools:1.3.1"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/samtools:1.3.1"
     memory: "4 GiB"
+    zones: zones
     disks: "local-disk ~{disk_size} HDD"
     preemptible: 3
     cpu: 1

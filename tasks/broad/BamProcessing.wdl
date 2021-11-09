@@ -23,6 +23,7 @@ task SortSam {
     Int preemptible_tries
     Int compression_level
     Int maxRetries = 1
+    String zones
   }
   # SortSam spills to disk a lot more because we are only store 300000 records in RAM now because its faster for our data so it needs
   # more disk space.  Also it spills to disk in an uncompressed format so we need to account for that with a larger multiplier
@@ -41,11 +42,12 @@ task SortSam {
 
   }
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/picard-cloud:2.23.8"
     disks: "local-disk " + disk_size + " HDD"
     cpu: "1"
     memory: "5000 MiB"
     maxRetries: maxRetries
+    zones: zones
     preemptible: preemptible_tries
   }
   output {
@@ -62,8 +64,9 @@ task SortSamSpark {
     String output_bam_basename
     Int preemptible_tries
     Int compression_level
-    String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.1.8.0"
+    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
     Int maxRetries = 1
+    String zones
   }
   # SortSam spills to disk a lot more because we are only store 300000 records in RAM now because its faster for our data so it needs
   # more disk space.  Also it spills to disk in an uncompressed format so we need to account for that with a larger multiplier
@@ -88,6 +91,7 @@ task SortSamSpark {
     cpu: "16"
     maxRetries: maxRetries
     memory: "102 GiB"
+    zones: zones
     preemptible: preemptible_tries
   }
   output {
@@ -116,6 +120,7 @@ task MarkDuplicates {
     Float? sorting_collection_size_ratio
 
     Int maxRetries = 1
+    String zones
   }
 
   # The merged bam will be smaller than the sum of the parts so we need to account for the unmerged inputs and the merged output.
@@ -145,10 +150,11 @@ task MarkDuplicates {
       ADD_PG_TAG_TO_READS=false
   }
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "~{memory_size} GiB"
     maxRetries: maxRetries
+    zones: zones
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -173,7 +179,8 @@ task BaseRecalibrator {
     File ref_fasta_index
     Int bqsr_scatter
     Int preemptible_tries
-    String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.1.8.0"
+    String zones
+    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
   }
 
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB") + size(ref_dict, "GiB")
@@ -204,6 +211,7 @@ task BaseRecalibrator {
     preemptible: preemptible_tries
     memory: "6 GiB"
     bootDiskSizeGb: 15
+    zones: zones
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -225,11 +233,12 @@ task ApplyBQSR {
     Int compression_level
     Int bqsr_scatter
     Int preemptible_tries
-    String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.1.8.0"
+    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
     Int memory_multiplier = 1
     Int additional_disk = 20
     Boolean bin_base_qualities = true
     Boolean somatic = false
+    String zones
   }
 
   Float ref_size = size(ref_fasta, "GiB") + size(ref_fasta_index, "GiB") + size(ref_dict, "GiB")
@@ -269,6 +278,7 @@ task ApplyBQSR {
     preemptible: preemptible_tries
     memory: "~{memory_size} MiB"
     bootDiskSizeGb: 15
+    zones: zones
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -283,7 +293,8 @@ task GatherBqsrReports {
     Array[File] input_bqsr_reports
     String output_report_filename
     Int preemptible_tries
-    String gatk_docker = "us.gcr.io/broad-gatk/gatk:4.1.8.0"
+    String gatk_docker = australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
+    String zones
   }
 
   command {
@@ -297,6 +308,7 @@ task GatherBqsrReports {
     preemptible: preemptible_tries
     memory: "3500 MiB"
     bootDiskSizeGb: 15
+    zones: zones
     disks: "local-disk 20 HDD"
   }
   output {
@@ -313,6 +325,7 @@ task GatherSortedBamFiles {
     Int compression_level
     Int preemptible_tries
     Int maxRetries = 1
+    String zones
   }
 
   # Multiply the input bam size by two to account for the input and output
@@ -327,10 +340,11 @@ task GatherSortedBamFiles {
       CREATE_MD5_FILE=true
     }
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "3 GiB"
     maxRetries: maxRetries
+    zones: zones
     disks: "local-disk " + disk_size + " HDD"
   }
   output {
@@ -350,6 +364,7 @@ task GatherUnsortedBamFiles {
     Int compression_level
     Int preemptible_tries
     Int maxRetries = 1
+    String zones
   }
 
   # Multiply the input bam size by two to account for the input and output
@@ -364,9 +379,10 @@ task GatherUnsortedBamFiles {
       CREATE_MD5_FILE=false
     }
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/picard-cloud:2.23.8"
     preemptible: preemptible_tries
     memory: "3 GiB"
+    zones: zones
     maxRetries: maxRetries
     disks: "local-disk " + disk_size + " HDD"
   }
@@ -383,6 +399,7 @@ task GenerateSubsettedContaminationResources {
     File contamination_sites_bed
     File contamination_sites_mu
     Int preemptible_tries
+    String zones
   }
 
   String output_ud = bait_set_name + "." + basename(contamination_sites_ud)
@@ -418,7 +435,8 @@ task GenerateSubsettedContaminationResources {
     preemptible: preemptible_tries
     memory: "3.5 GiB"
     disks: "local-disk 10 HDD"
-    docker: "us.gcr.io/broad-gotc-prod/bedtools:2.27.1"
+    zones: zones
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/bedtools:2.27.1"
   }
   output {
     File subsetted_contamination_ud = output_ud
@@ -455,6 +473,7 @@ task CheckContamination {
     Boolean disable_sanity_check = false
 
     Int maxRetries = 1
+    String zones
   }
 
   Int disk_size = ceil(size(input_bam, "GiB") + size(ref_fasta, "GiB")) + 30
@@ -504,7 +523,8 @@ task CheckContamination {
     memory: "7.5 GiB"
     disks: "local-disk " + disk_size + " HDD"
     maxRetries: maxRetries
-    docker: "us.gcr.io/broad-gotc-prod/verify-bam-id:1.0.0-c1cba76e979904eb69c31520a0d7f5be63c72253-1626442707"
+    zones: zones
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/verify-bam-id:1.0.0-c1cba76e979904eb69c31520a0d7f5be63c72253-1626442707"
     cpu: 2
   }
   output {

@@ -15,6 +15,7 @@ workflow FastqToUnmappedBams {
     String RGLB
     String RGCN
     String sample_name
+    String zones
 
     String base_file_name
     String unmapped_bam_suffix = ".unmapped.bam"
@@ -35,7 +36,8 @@ workflow FastqToUnmappedBams {
       RGPL = RGPL,
       RGCN = RGCN,
       sample_name = sample_name,
-      disk_size = ceil((size(input_R1, "GiB") + size(input_R2, "GiB"))* 4) + additional_disk
+      disk_size = ceil((size(input_R1, "GiB") + size(input_R2, "GiB"))* 4) + additional_disk,
+      zones = zones
   }
 
   Float unmapped_bam_size = size(FastqToSam.output_bam, "GiB")
@@ -44,7 +46,8 @@ workflow FastqToUnmappedBams {
     input:
       input_bam = FastqToSam.output_bam,
       report_filename = unmapped_bam_filename + ".validation_report",
-      disk_size = ceil(unmapped_bam_size) + additional_disk
+      disk_size = ceil(unmapped_bam_size) + additional_disk,
+      zones = zones
   }
 
   output {
@@ -70,6 +73,7 @@ task FastqToSam {
 
     Int disk_size
     Int memory_in_MiB = 3000
+    String zones
   }
 
   Int java_mem = memory_in_MiB - 1000
@@ -89,7 +93,7 @@ task FastqToSam {
       --SORT_ORDER queryname
   >>>
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/picard-cloud:2.23.8"
     disks: "local-disk " + 400 + " HDD"
     memory: "6.5 GB"
     preemptible: 3
@@ -107,6 +111,7 @@ task RevertSam {
     Int disk_size
     Int memory_in_MiB = 3000
     Int maxRetries = 1
+    String zones
   }
 
   Int java_mem = memory_in_MiB - 1000
@@ -127,11 +132,12 @@ task RevertSam {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/picard-cloud:2.23.8"
     disks: "local-disk " + disk_size + " HDD"
     memory: "~{memory_in_MiB} MiB"
     maxRetries: maxRetries
     preemptible: 3
+    zones: zones
   }
 
   output {
@@ -150,6 +156,7 @@ task CramToBam {
     Int disk_size
     Int memory_in_MiB = 7000
     Int maxRetries = 1
+    String zones
   }
 
   command <<<
@@ -165,12 +172,13 @@ task CramToBam {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/samtools:1.0.0-1.11-1624651616"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/samtools:1.0.0-1.11-1624651616"
     cpu: 3
     memory: "~{memory_in_MiB} MiB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: 3
     maxRetries: maxRetries
+    zones: zones
   }
 
   output {
@@ -185,6 +193,7 @@ task GenerateOutputMap {
     String unmapped_bam_suffix
     Int disk_size
     Int memory_in_MiB = 3000
+    String zones
   }
 
   command <<<
@@ -202,10 +211,11 @@ task GenerateOutputMap {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/samtools:1.0.0-1.11-1624651616"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/samtools:1.0.0-1.11-1624651616"
     disks: "local-disk " + disk_size + " HDD"
     memory: "~{memory_in_MiB} MiB"
     preemptible: 3
+    zones: zones
   }
 
   output {
@@ -218,6 +228,7 @@ task SplitUpOutputMapFile {
     File read_group_map_file
     Int disk_size = 10
     Int memory_in_MiB = 3000
+    String zones
   }
 
   command <<<
@@ -229,9 +240,10 @@ task SplitUpOutputMapFile {
   >>>
 
   runtime {
-    docker: "gcr.io/gcp-runtimes/ubuntu_16_0_4:latest"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/ubuntu_16_0_4:latest"
     disks: "local-disk " + disk_size + " HDD"
     memory: "~{memory_in_MiB} MiB"
+    zones: zones
   }
 
   output {
@@ -246,6 +258,7 @@ task SplitOutUbamByReadGroup {
     File rg_to_ubam_file
     Int disk_size
     Int memory_in_MiB = 30000
+    String zones
   }
 
   Array[Array[String]] tmp = read_tsv(rg_to_ubam_file)
@@ -260,11 +273,12 @@ task SplitOutUbamByReadGroup {
   }
 
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/samtools:1.0.0-1.11-1624651616"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/samtools:1.0.0-1.11-1624651616"
     cpu: 2
     disks: "local-disk " + disk_size + " HDD"
     memory: "~{memory_in_MiB} MiB"
     preemptible: 3
+    zones: zones
   }
 }
 
@@ -274,6 +288,7 @@ task ValidateSamFile {
     String report_filename
     Int disk_size
     Int memory_in_MiB = 3000
+    String zones
   }
 
   Int java_mem = memory_in_MiB - 1000
@@ -290,10 +305,11 @@ task ValidateSamFile {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/picard-cloud:2.23.8"
     disks: "local-disk " + disk_size + " HDD"
     memory: "~{memory_in_MiB} MiB"
     preemptible: 3
+    zones: zones
     continueOnReturnCode: true
   }
 
@@ -309,6 +325,7 @@ task SortSam {
     Int memory_in_MiB = 7000
     Float sort_sam_disk_multiplier = 6
     Int maxRetries = 1
+    String zones
   }
   # SortSam spills to disk a lot more because we are only store 300000 records in RAM now because its faster for our data so it needs
   # more disk space.  Also it spills to disk in an uncompressed format so we need to account for that with a larger multiplier
@@ -326,10 +343,11 @@ task SortSam {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-gotc-prod/picard-cloud:2.23.8"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/picard-cloud:2.23.8"
     disks: "local-disk " + disk_size + " HDD"
     memory: "~{memory_in_MiB} MiB"
     preemptible: 3
+    zones: zones
     maxRetries: maxRetries
   }
 

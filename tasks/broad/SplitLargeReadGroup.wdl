@@ -41,6 +41,7 @@ workflow SplitLargeReadGroup {
     Boolean hard_clip_reads = false
     Boolean unmap_contaminant_reads = true
     Boolean use_bwa_mem = true
+    String zones
   }
 
   call Alignment.SamSplitter as SamSplitter {
@@ -48,7 +49,8 @@ workflow SplitLargeReadGroup {
       input_bam = input_bam,
       n_reads = reads_per_file,
       preemptible_tries = preemptible_tries,
-      compression_level = compression_level
+      compression_level = compression_level,
+      zones = zones
   }
 
   scatter(unmapped_bam in SamSplitter.split_bams) {
@@ -65,7 +67,8 @@ workflow SplitLargeReadGroup {
           compression_level = compression_level,
           preemptible_tries = preemptible_tries,
           hard_clip_reads = hard_clip_reads,
-          unmap_contaminant_reads = unmap_contaminant_reads
+          unmap_contaminant_reads = unmap_contaminant_reads,
+          zones = zones
       }
     }
     if (!use_bwa_mem) {
@@ -78,7 +81,8 @@ workflow SplitLargeReadGroup {
           compression_level = compression_level,
           preemptible_tries = preemptible_tries,
           hard_clip_reads = hard_clip_reads,
-          unmap_contaminant_reads = unmap_contaminant_reads
+          unmap_contaminant_reads = unmap_contaminant_reads,
+          zones = zones
       }
     }
 
@@ -90,7 +94,8 @@ workflow SplitLargeReadGroup {
   call Utils.SumFloats as SumSplitAlignedSizes {
     input:
       sizes = current_mapped_size,
-      preemptible_tries = preemptible_tries
+      preemptible_tries = preemptible_tries,
+      zones = zones
   }
 
   call Processing.GatherUnsortedBamFiles as GatherMonolithicBamFile {
@@ -99,7 +104,8 @@ workflow SplitLargeReadGroup {
       total_input_size = SumSplitAlignedSizes.total_size,
       output_bam_basename = output_bam_basename,
       preemptible_tries = preemptible_tries,
-      compression_level = compression_level
+      compression_level = compression_level,
+      zones = zones
   }
   output {
     File aligned_bam = GatherMonolithicBamFile.output_bam

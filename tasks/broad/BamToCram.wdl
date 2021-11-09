@@ -15,6 +15,7 @@ workflow BamToCram {
     String base_file_name
     Int agg_preemptible_tries
     Boolean continueOnReturnCode
+    String zones
   }
 
 
@@ -30,7 +31,8 @@ workflow BamToCram {
       ref_fasta = ref_fasta,
       ref_fasta_index = ref_fasta_index,
       output_basename = base_file_name,
-      preemptible_tries = agg_preemptible_tries
+      preemptible_tries = agg_preemptible_tries,
+      zones = zones
   }
 
   # Check whether the data has massively high duplication or chimerism rates
@@ -40,7 +42,8 @@ workflow BamToCram {
       chimerism_metrics = chimerism_metrics,
       max_duplication_in_reasonable_sample = max_duplication_in_reasonable_sample,
       max_chimerism_in_reasonable_sample = max_chimerism_in_reasonable_sample,
-      preemptible_tries = agg_preemptible_tries
+      preemptible_tries = agg_preemptible_tries,
+      zones = zones
  }
 
   # Validate the CRAM file
@@ -56,7 +59,8 @@ workflow BamToCram {
       max_output = 1000000000,
       is_outlier_data = CheckPreValidation.is_outlier_data,
       preemptible_tries = agg_preemptible_tries,
-      continueOnReturnCode = continueOnReturnCode
+      continueOnReturnCode = continueOnReturnCode,
+      zones = zones
   }
 
   output {

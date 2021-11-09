@@ -49,6 +49,8 @@ workflow WholeGenomeGermlineMultipleSamplesFastq {
 
     File wgs_coverage_interval_list
 
+    String zones
+
     Boolean provide_bam_output = false
     Boolean use_gatk3_haplotype_caller = true
 
@@ -114,7 +116,8 @@ workflow WholeGenomeGermlineMultipleSamplesFastq {
         unmap_contaminant_reads = unmap_contaminant_reads,
         perform_bqsr = perform_bqsr,
         use_bwa_mem = use_bwa_mem,
-        use_dragen_hard_filtering = use_dragen_hard_filtering
+        use_dragen_hard_filtering = use_dragen_hard_filtering,
+        zones = zones
     }
   }
 

@@ -34,6 +34,7 @@ task FastqAndDragmap {
     Float disk_multiplier = 8
     Int memory_gb = 40
     Int maxRetries = 1
+    String zones
   }
 
   Float input_size = size(input_R1, "GiB") + size(input_R2, "GiB")
@@ -55,11 +56,12 @@ task FastqAndDragmap {
     dragen-os -1 ~{input_R1} -2 ~{input_R2} --RGID ~{RGID} --RGSM ~{sample_name} -r dragen_reference --interleaved=1 2> >(tee ~{output_bam_basename}.dragmap.stderr.log >&2) | samtools view -h -O BAM - > ~{output_bam_basename}.bam
   >>>
   runtime {
-    docker: "us.gcr.io/broad-dsde-methods/dragmap:1.2.1"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/dragmap:1.2.1"
     preemptible: preemptible_tries
     memory: "120 GB"
     cpu: "32"
     maxRetries: maxRetries
+    zones: zones
     cpuPlatform: "Intel Sandy Bridge"
     disks: "local-disk " + disk_size + " HDD"
   }
@@ -84,6 +86,7 @@ task SamToFastqAndDragmapAndMba {
 
     Float disk_multiplier = 8
     Int memory_gb = 40
+    String zones
     Int maxRetries = 1
   }
 
@@ -139,11 +142,12 @@ task SamToFastqAndDragmapAndMba {
       ADD_PG_TAG_TO_READS=false
   >>>
   runtime {
-    docker: "us.gcr.io/broad-dsde-methods/dragmap:1.2.1"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/dragmap:1.2.1"
     preemptible: preemptible_tries
     memory: memory_gb + " GiB"
     cpu: "16"
     maxRetries: maxRetries
+    zones: zones
     disks: "local-disk " + disk_size + " HDD"
   }
   output {

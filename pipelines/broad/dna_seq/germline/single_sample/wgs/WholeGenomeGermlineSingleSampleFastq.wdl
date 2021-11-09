@@ -54,6 +54,8 @@ workflow WholeGenomeGermlineSingleSampleFastq {
 
     File wgs_coverage_interval_list
 
+    String zones
+
     Boolean provide_bam_output = false
     Boolean use_gatk3_haplotype_caller = true
 
@@ -71,6 +73,7 @@ workflow WholeGenomeGermlineSingleSampleFastq {
   if (dragen_functional_equivalence_mode && dragen_maximum_quality_mode) {
     call Utilities.ErrorWithMessage as PresetArgumentsError {
       input:
+        zones = zones,
         message = "Both dragen_functional_equivalence_mode and dragen_maximum_quality_mode have been set to true, however, they are mutually exclusive. You can set either of them to true, or set them both to false and adjust the arguments individually."
     }
   }
@@ -78,6 +81,7 @@ workflow WholeGenomeGermlineSingleSampleFastq {
   if (run_dragen_mode_variant_calling && use_gatk3_haplotype_caller) {
     call Utilities.ErrorWithMessage as DragenModeVariantCallingAndGATK3Error {
       input:
+        zones = zones,
         message = "DRAGEN mode variant calling has been activated, however, the HaplotypeCaller version has been set to use GATK 3. Please set use_gatk3_haplotype_caller to false to use DRAGEN mode variant calling."
     }
   }
@@ -116,7 +120,9 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       recalibrated_bam_basename   = recalibrated_bam_basename,
       perform_bqsr                = perform_bqsr_,
       use_bwa_mem                 = use_bwa_mem_,
-      unmap_contaminant_reads     = unmap_contaminant_reads_
+      unmap_contaminant_reads     = unmap_contaminant_reads_,
+
+      zones = zones
   }
 
   call AggregatedQC.AggregatedBamQC {
@@ -131,7 +137,8 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       fingerprint_genotypes_file = fingerprint_genotypes_file,
       fingerprint_genotypes_index = fingerprint_genotypes_index,
       papi_settings = papi_settings,
-      qc_settings = qc_settings
+      qc_settings = qc_settings,
+      zones = zones
   }
 
   call ToCram.BamToCram as BamToCram {
@@ -144,7 +151,8 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       chimerism_metrics = AggregatedBamQC.agg_alignment_summary_metrics,
       base_file_name = sample_and_fastqs.base_file_name,
       agg_preemptible_tries = papi_settings.agg_preemptible_tries,
-      continueOnReturnCode = qc_settings.continueOnReturnCode
+      continueOnReturnCode = qc_settings.continueOnReturnCode,
+      zones = zones
   }
 
   # QC the sample WGS metrics (stringent thresholds)
@@ -158,7 +166,8 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       wgs_coverage_interval_list = wgs_coverage_interval_list,
       read_length = read_length,
       preemptible_tries = papi_settings.agg_preemptible_tries,
-      continueOnReturnCode = qc_settings.continueOnReturnCode
+      continueOnReturnCode = qc_settings.continueOnReturnCode,
+      zones = zones
   }
 
   # QC the sample raw WGS metrics (common thresholds)
@@ -172,7 +181,8 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       wgs_coverage_interval_list = wgs_coverage_interval_list,
       read_length = read_length,
       preemptible_tries = papi_settings.agg_preemptible_tries,
-      continueOnReturnCode = qc_settings.continueOnReturnCode
+      continueOnReturnCode = qc_settings.continueOnReturnCode,
+      zones = zones
   }
 
   call ToGvcf.VariantCalling as BamToGvcf {
@@ -197,7 +207,8 @@ workflow WholeGenomeGermlineSingleSampleFastq {
       agg_preemptible_tries = papi_settings.agg_preemptible_tries,
       use_gatk3_haplotype_caller = use_gatk3_haplotype_caller_,
       use_dragen_hard_filtering = use_dragen_hard_filtering,
-      continueOnReturnCode = qc_settings.continueOnReturnCode
+      continueOnReturnCode = qc_settings.continueOnReturnCode,
+      zones = zones
   }
 
   if (provide_bam_output) {

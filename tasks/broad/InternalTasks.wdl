@@ -17,7 +17,7 @@ task MakeSafeFilename {
   >>>
 
   runtime {
-    docker: "gcr.io/gcp-runtimes/ubuntu_16_0_4:latest"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/ubuntu_16_0_4:latest"
     disks: "local-disk 10 HDD"
     memory: "1 GiB"
     preemptible: 3
@@ -110,7 +110,7 @@ task DownloadGenotypes {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-arrays-prod/arrays-picard-private:4.1.0-1631191359"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/arrays-picard-private:4.1.0-1631191359"
     memory: "3.5 GiB"
     maxRetries: select_first([max_retries, 2])
     preemptible: select_first([preemptible_tries, 3])
@@ -162,7 +162,7 @@ task UploadFingerprintToMercury {
   >>>
 
   runtime {
-    docker: "us.gcr.io/broad-arrays-prod/arrays-picard-private:4.1.0-1631191359"
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/arrays-picard-private:4.1.0-1631191359"
     memory: "3.5 GiB"
     maxRetries: select_first([max_retries, 2])
     preemptible: select_first([preemptible_tries, 3])
