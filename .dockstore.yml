@@ -15,3 +15,12 @@ workflows:
   - name: WholeGenomeFromFastq
     subclass: WDL
     primaryDescriptorPath: /pipelines/broad/reprocessing/wgs/WholeGenomeFromFastq.wdl
+  - name: AS_VQSR
+    subclass: WDL
+    primaryDescriptorPath: /pipelines/broad/dna_seq/germline/AS_VQSR/AS_VQSR.wdl
+  - name: ReblockGVCFs
+    subclass: WDL
+    primaryDescriptorPath: /tasks/broad/ReblockGVCFs.wdl
+  - name: CramToSubsetBam
+    subclass: WDL
+    primaryDescriptorPath: /tasks/broad/CramToSubsetBam.wdl
