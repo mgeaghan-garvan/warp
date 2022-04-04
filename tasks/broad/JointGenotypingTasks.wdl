@@ -1073,6 +1073,7 @@ task ReblockGVCFs {
   input {
     File input_gvcf
     File input_tbi
+    File ref_dict
     File ref_fasta
     File ref_fastq_index
     String output_prefix
@@ -1080,7 +1081,7 @@ task ReblockGVCFs {
   }
 
   String output_basename = output_prefix + ".reblock"
-  Int disk_size = ceil(size(input_gvcf, "GiB") + size(ref_fasta, "GiB")) + 10
+  Int disk_size = ceil(size(input_gvcf, "GiB") + size(ref_fasta, "GiB") + size(ref_dict, "GiB")) + 10
 
   command<<<
     set -e

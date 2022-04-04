@@ -8,6 +8,7 @@ workflow ReblockGVCFs {
     File input_tbi
     File ref_fasta
     File ref_fastq_index
+    File ref_dict
     String output_prefix
   }
 
@@ -15,6 +16,7 @@ workflow ReblockGVCFs {
     input:
       input_gvcf = input_gvcf,
       input_tbi = input_tbi,
+      ref_dict = ref_dict,
       ref_fasta = ref_fasta,
       ref_fastq_index = ref_fastq_index,
       output_prefix = output_prefix
