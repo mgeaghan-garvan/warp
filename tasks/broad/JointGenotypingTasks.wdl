@@ -1068,3 +1068,100 @@ task PartitionSampleNameMap {
     docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/python:2.7"
   }
 }
+
+task ReblockGVCFs {
+  input {
+    File input_gvcf
+    File input_tbi
+    File ref_fasta
+    File ref_fastq_index
+    String output_prefix
+    String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
+  }
+
+  String output_basename = output_prefix + ".reblock"
+  Int disk_size = ceil(size(input_gvcf, "GiB") + size(ref_fasta, "GiB")) + 10
+
+  command<<<
+    set -e
+    set -o pipefail
+
+    gatk --java-options -Xms3g ReblockGVCF \
+      -GQB 20 \
+      -do-qual-approx \
+      -R ~{ref_fasta} \
+      -V ~{input_gvcf} \
+      -O ~{output_basename}.g.vcf.gz \
+      --create-output-variant-index true
+  >>>
+
+  runtime {
+    memory: "3.75 GiB"
+    preemptible: 1
+    disks: "local-disk " + disk_size + " HDD"
+    docker: gatk_docker
+  }
+
+  output {
+    File reblock_gvcf = "~{output_basename}.g.vcf.gz"
+    File reblock_tbi = "~{output_basename}.g.vcf.gz.tbi"
+  }
+}
+
+task CompressAndTabix {
+  input {
+    String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
+    File input_vcf
+  }
+
+  Int disk_size = ceil(size(input_vcf, "GiB") * 3)
+
+  command<<<
+    set -e
+    set -o pipefail
+
+    bgzip -c ~{input_vcf} > ~{input_vcf}.gz
+    tabix -p vcf ~{input_vcf}.gz
+  >>>
+
+  runtime {
+    memory: "3.75 GiB"
+    preemptible: 1
+    disks: "local-disk " + disk_size + " HDD"
+    docker: gatk_docker
+  }
+
+  output {
+    File vcfgz = "~{input_vcf}.gz"
+    File tbi = "~{input_vcf}.gz.tbi"
+  }
+}
+
+task AnnotateSB {
+  input {
+    File input_vcf
+    File input_vcf_index
+    String annotated_vcf_filename
+  }
+
+  Int disk_size =  ceil(size(input_vcf, "GiB") * 3)
+
+  command<<<
+    set -e
+    set -o pipefail
+
+    bcftools annotate -x INFO/SB ~{input_vcf} -Oz -o ~{annotated_vcf_filename} && bcftools index ~{annotated_vcf_filename}
+  >>>
+
+  runtime {
+    memory: "3.75 GiB"
+    preemptible: 1
+    disks: "local-disk " + disk_size + " HDD"
+    docker: "zhangb1/bcftools-tabix:latest"
+  }
+
+  output {
+    File annotated_vcf = "~{annotated_vcf_filename}"
+    File annotated_vcf_index = "~{annotated_vcf_filename}.tbi"
+  }
+}
