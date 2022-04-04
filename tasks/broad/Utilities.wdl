@@ -239,3 +239,42 @@ task ErrorWithMessage{
     zones: zones
   }
 }
+
+# Task to convert from Whole Genome CRAM to MT Bam (pre-processing to run Mity)
+task CramToSubsetBam {
+  input {
+    File input_cram
+    File input_cram_index
+    File ref_fasta
+    File ref_fasta_index
+
+    String mt_string = "chrM"
+    String output_prefix
+    Int preemptible_tries
+    String zones
+  }
+
+  Int disk_size = ceil(size(input_cram, "GiB") + size(ref_fasta, "GiB")) + 30
+  String output_bam_name = output_prefix + "." + mt_string
+  command<<<
+    set -e
+    set -o pipefail
+
+    # Convert CRAM to MT Bam
+    samtools view -b -T ~{ref_fasta} ~{input_cram} ~{mt_string} -o ~{output_bam_name}.bam
+    samtools index ~{output_bam_name}.bam
+  >>>
+
+  runtime {
+    preemptible: preemptible_tries
+    memory: "3 GiB"
+    disks: "local-disk " + disk_size + " HDD"
+    zones: zones
+    docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/samtools:1.0.0-1.11-1624651616"
+  }
+
+  output {
+    File mt_bam = "~{output_bam_name}.bam"
+    File mt_bam_index = "~{output_bam_name}.bam.bai"
+  }
+}
