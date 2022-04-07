@@ -1152,14 +1152,14 @@ task AnnotateSB {
     set -e
     set -o pipefail
 
-    bcftools annotate -x INFO/SB ~{input_vcf} -Oz -o ~{annotated_vcf_filename} && bcftools index ~{annotated_vcf_filename}
+    bcftools annotate -x INFO/SB ~{input_vcf} -Oz -o ~{annotated_vcf_filename} && tabix -p vcf ~{annotated_vcf_filename}
   >>>
 
   runtime {
     memory: "3.75 GiB"
     preemptible: 1
     disks: "local-disk " + disk_size + " HDD"
-    docker: "zhangb1/bcftools-tabix:latest"
+    docker: "vandhanak/bcftools:1.3.1"
   }
 
   output {
