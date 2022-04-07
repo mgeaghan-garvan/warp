@@ -58,7 +58,8 @@ workflow AS_VQSR {
 
   call Tasks.CompressAndTabix as CompressAndTabix {
     input:
-      input_vcf = input_vcf
+      input_vcf = input_vcf,
+      output_prefix = callset_name
   }
 
   call Tasks.IndelsVariantRecalibrator as IndelsVariantRecalibrator {

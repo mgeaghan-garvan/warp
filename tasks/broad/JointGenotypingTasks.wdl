@@ -1113,6 +1113,7 @@ task CompressAndTabix {
   input {
     String gatk_docker = "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/gatk:4.1.8.0"
     File input_vcf
+    String output_prefix
   }
 
   Int disk_size = ceil(size(input_vcf, "GiB") * 3)
@@ -1121,8 +1122,8 @@ task CompressAndTabix {
     set -e
     set -o pipefail
 
-    bgzip -c ~{input_vcf} > ~{input_vcf}.gz
-    tabix -p vcf ~{input_vcf}.gz
+    bgzip -c ~{input_vcf} > ~{output_prefix}.gz
+    tabix -p vcf ~{output_prefix}.gz
   >>>
 
   runtime {
@@ -1133,8 +1134,8 @@ task CompressAndTabix {
   }
 
   output {
-    File vcfgz = "~{input_vcf}.gz"
-    File tbi = "~{input_vcf}.gz.tbi"
+    File vcfgz = "~{output_prefix}.gz"
+    File tbi = "~{output_prefix}.gz.tbi"
   }
 }
 
