@@ -77,6 +77,7 @@ task FastqToSam {
   }
 
   Int java_mem = memory_in_MiB - 1000
+  Int disk = if (disk_size < 400) then 400 else disk_size
 
   command <<<
     java -Xmx6000m -jar /usr/picard/picard.jar \
@@ -94,7 +95,7 @@ task FastqToSam {
   >>>
   runtime {
     docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/picard-cloud:2.23.8"
-    disks: "local-disk " + 400 + " HDD"
+    disks: "local-disk " + disk + " HDD"
     memory: "6.5 GB"
     preemptible: 3
   }
