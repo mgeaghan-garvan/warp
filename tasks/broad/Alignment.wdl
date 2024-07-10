@@ -207,7 +207,7 @@ task SamSplitter {
 
   Float unmapped_bam_size = size(input_bam, "GiB")
   # Since the output bams are less compressed than the input bam we need a disk multiplier that's larger than 2.
-  Float disk_multiplier = 2.5
+  Float disk_multiplier = 3.0
   Int disk_size = ceil(disk_multiplier * unmapped_bam_size + 20)
 
   command {
@@ -228,7 +228,7 @@ task SamSplitter {
   runtime {
     docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/samtools-picard-bwa:1.0.0-0.7.15-2.23.8-1626449438"
     preemptible: preemptible_tries
-    memory: "3.75 GiB"
+    memory: "7.5 GiB"
     zones: zones
     disks: "local-disk " + disk_size + " HDD"
   }
