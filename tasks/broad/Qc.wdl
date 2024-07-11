@@ -600,7 +600,7 @@ task CalculateReadGroupChecksum {
     String zones
   }
 
-  Int disk_size = ceil(size(input_bam, "GiB")) + 40
+  Int disk_size = ceil(size(input_bam, "GiB")) + 100
 
   command {
     java -Xms1000m -jar /usr/picard/picard.jar \
@@ -611,7 +611,7 @@ task CalculateReadGroupChecksum {
   runtime {
     docker: "australia-southeast1-docker.pkg.dev/pb-dev-312200/nagim-images/picard-cloud:2.23.8"
     preemptible: preemptible_tries
-    memory: "4 GiB"
+    memory: "7.5 GiB"
     zones: zones
     continueOnReturnCode: continueOnReturnCode
     disks: "local-disk " + disk_size + " HDD"
